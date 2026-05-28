@@ -1,0 +1,103 @@
+<section class="form-section">
+  <div class="form-panel">
+    <h2>Crear cuenta</h2>
+    <form
+      [formGroup]="registerFormGroup"
+      (ngSubmit)="onRegister()">
+      <div class="form-control">
+        <label
+          class="form-label"
+          for="register-name"
+          >Nombre:</label
+        >
+        <input
+          id="register-name"
+          class="form-input"
+          type="text"
+          formControlName="name"
+          name="name"
+          placeholder="Nombre" />
+        <app-form-error-message
+          [control]="registerFormGroup.get('name')"
+          label="Nombre" />
+      </div>
+
+      <div class="form-control">
+        <label
+          class="form-label"
+          for="register-last-name"
+          >Apellido:</label
+        >
+        <input
+          id="register-last-name"
+          class="form-input"
+          type="text"
+          formControlName="lastName"
+          name="lastName"
+          placeholder="Apellido" />
+        <app-form-error-message
+          [control]="registerFormGroup.get('lastName')"
+          label="Apellido" />
+      </div>
+      <div class="form-control">
+        <label
+          class="form-label"
+          for="register-birth-date"
+          >Fecha de nacimiento:</label
+        >
+        <p-datepicker
+          inputId="register-birth-date"
+          class="form-input"
+          formControlName="birthDate"
+          dateFormat="dd/mm/yy"
+          placeholder="dd/mm/yyyy"
+          pInputMask="99/99/9999" />
+        <app-form-error-message
+          [control]="registerFormGroup.get('birthDate')"
+          label="Fecha de nacimiento"></app-form-error-message>
+      </div>
+
+      <div class="form-control">
+        <label
+          class="form-label"
+          for="register-email"
+          >Correo electrónico:</label
+        >
+        <input
+          id="register-email"
+          class="form-input"
+          type="text"
+          formControlName="email"
+          name="email"
+          placeholder="Correo Electrónico" />
+        <app-form-error-message
+          [control]="registerFormGroup.get('email')"
+          label="Correo electrónico" />
+      </div>
+
+      <div class="form-control">
+        <label
+          class="form-label"
+          for="register-password"
+          >Contraseña:</label
+        >
+        <input
+          id="register-password"
+          class="form-input"
+          type="password"
+          formControlName="password"
+          name="password"
+          placeholder="Contraseña" />
+        <app-form-error-message
+          [control]="registerFormGroup.get('password')"
+          label="Contraseña" />
+      </div>
+
+      <div class="form-actions">
+        <app-button
+          [buttonModel]="registerButtonModel()"
+          type="submit"></app-button>
+      </div>
+    </form>
+  </div>
+</section>

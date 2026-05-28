@@ -1,0 +1,17 @@
+<section>
+  <h2>INGRESO RÁPIDO:</h2>
+
+  <div class="cards-grid">
+    @for (user of users; track user.email) {
+      <app-card-base [cardModel]="user">
+        <button
+          type="button"
+          class="flex h-full cursor-pointer flex-col gap-3 p-3"
+          (click)="quickLoginSelected.emit({ email: user.email, password: user.password })">
+          <h3 class="m-0">{{ user.title }}</h3>
+          <p class="m-0">{{ user.email }}</p>
+        </button>
+      </app-card-base>
+    }
+  </div>
+</section>

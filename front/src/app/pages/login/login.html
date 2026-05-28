@@ -1,0 +1,50 @@
+<section class="form-section">
+  <div class="form-panel">
+    <h2>Iniciar sesión</h2>
+    <form
+      [formGroup]="loginFormGroup"
+      (ngSubmit)="onLogin()">
+      <div class="form-control">
+        <label
+          class="form-label"
+          for="login-email"
+          >Correo electrónico:</label
+        >
+        <input
+          id="login-email"
+          class="form-input"
+          type="text"
+          formControlName="email"
+          name="email"
+          placeholder="Correo Electrónico" />
+        <app-form-error-message
+          [control]="loginFormGroup.get('email')"
+          label="Correo electrónico"></app-form-error-message>
+      </div>
+      <div class="form-control">
+        <label
+          class="form-label"
+          for="login-password"
+          >Contraseña:</label
+        >
+        <input
+          id="login-password"
+          class="form-input"
+          type="password"
+          formControlName="password"
+          name="password"
+          placeholder="Contraseña" />
+        <app-form-error-message
+          [control]="loginFormGroup.get('password')"
+          label="Contraseña"></app-form-error-message>
+      </div>
+      <div class="form-actions">
+        <app-button
+          [buttonModel]="loginButtonModel()"
+          type="submit">
+        </app-button>
+      </div>
+    </form>
+    <app-quick-login (quickLoginSelected)="onQuickLogin($event)"></app-quick-login>
+  </div>
+</section>
