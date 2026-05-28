@@ -1,0 +1,23 @@
+<div
+  tooltipPosition="bottom"
+  [pTooltip]="buttonModel()?.tooltipMessage ?? ''">
+  <p-button
+    #buttonElement
+    [type]="buttonModel()?.type || 'button'"
+    [label]="buttonModel()?.label?.length != undefined ? buttonModel()?.label : ''"
+    [icon]="buttonModel()?.iconName"
+    [outlined]="buttonModel()?.style === 'outlined'"
+    [iconPos]="buttonModel()?.iconPosition || 'left'"
+    [disabled]="
+      (buttonModel()?.disabledSignal?.() ?? buttonModel()?.optionDisabled ?? false) ||
+      !(buttonModel()?.permission | async)?.allowed
+    "
+    [severity]="buttonModel()?.severity || 'primary'"
+    [styleClass]="buttonModel()?.styleClass"
+    [raised]="true"
+    (click)="
+      buttonElement.disabled || (buttonModel()?.type || 'button') === 'submit'
+        ? null
+        : buttonModel()?.action(targetId)
+    "></p-button>
+</div>

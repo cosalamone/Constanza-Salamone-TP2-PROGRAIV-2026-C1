@@ -1,0 +1,7 @@
+<div>
+  <ng-container
+    *ngComponentOutlet="
+      buttonModel()?.buttonType ?? null;
+      inputs: { buttonModel: buttonModel(), targetId: targetId() }
+    "></ng-container>
+</div>

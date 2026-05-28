@@ -1,0 +1,29 @@
+<section
+  class="timer-shell"
+  [ngClass]="
+    isFinished() ? 'timer-shell--finished' : isAboutToFinish() ? 'timer-shell--warning' : null
+  ">
+  <span
+    [ngClass]="
+      isFinished()
+        ? 'timer-label--finished'
+        : isAboutToFinish()
+          ? 'timer-label--warning'
+          : 'timer-label'
+    "
+    >{{
+      isFinished()
+        ? '¡No hay más tiempo!'
+        : isAboutToFinish()
+          ? '¡Se está acabando el tiempo!'
+          : 'Tiempo restante'
+    }}</span
+  >
+  <div
+    class="timer-display"
+    [ngClass]="
+      isFinished() ? 'timer-display--finished' : isAboutToFinish() ? 'timer-display--warning' : null
+    ">
+    <span class="timer-unit">{{ formattedTime() }}</span>
+  </div>
+</section>

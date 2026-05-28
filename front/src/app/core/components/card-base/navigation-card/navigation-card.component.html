@@ -1,0 +1,19 @@
+<a
+  class="flex h-full flex-col gap-3 p-3"
+  [routerLink]="isDisabled() ? null : cardModel()?.routerLink"
+  tooltipPosition="bottom"
+  [pTooltip]="
+    isDisabled() && showTooltip() ? 'Es necesario estar logueado para poder acceder' : undefined
+  "
+  [ngClass]="{ disabled: isDisabled() }">
+  <h3
+    [class]="
+      'm-0 text-lg font-bold' +
+      (isDisabled() ? ' text-(--color-text-dark)' : ' text-(--color-primary)')
+    ">
+    {{ cardModel()?.title }}
+  </h3>
+  <p class="m-0 text-sm leading-relaxed text-(--color-text-light)">
+    {{ cardModel()?.description }}
+  </p>
+</a>
