@@ -1,13 +1,17 @@
 export interface IRegister {
   name: string;
   lastName: string;
+  username: string;
   birthDate: Date;
-  email: string;
   password: string;
+  confirmPassword: string;
+  description?: string;
+  profileImage?: string;
+  role?: string;
 }
 
 export interface ILogin {
-  email: string;
+  username: string;
   password: string;
 }
 

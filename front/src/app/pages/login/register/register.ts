@@ -7,7 +7,7 @@ import { ButtonBaseComponent } from '../../../core/components/buttons/button-bas
 import { FormErrorMessageComponent } from '../../../core/components/forms/form-error-message/form-error-message.component';
 import { ToastService } from '../../../core/services/toast.service';
 import { NavigateToService } from '../../../core/services/navigate/navigate-to.service';
-import { nameValidator, passwordValidator } from '../../../core/utils/form-validation';
+import { nameValidator, passwordValidator, confirmPasswordValidator } from '../../../core/utils/form-validation';
 import { RegisterButtonModel } from '../../../core/models/buttons/register-button.model';
 import { IAuthError, IRegister } from '../../../core/interfaces/auth-interfaces/auth.interfaces';
 import { AuthService } from '../../../services/auth/auth.service';
@@ -25,12 +25,16 @@ export class Register {
   private readonly _toast = inject(ToastService);
   private readonly _navigateToService = inject(NavigateToService);
 
+  public profileImageBase64 = signal<string>('');
+
   public readonly registerFormGroup = this._formBuilder.group({
     name: ['', [Validators.required, Validators.minLength(2), nameValidator]],
     lastName: ['', [Validators.required, Validators.minLength(2), nameValidator]],
+    username: ['', [Validators.required, Validators.minLength(3)]],
     birthDate: ['', [Validators.required]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6), passwordValidator]],
+    password: ['', [Validators.required, Validators.minLength(8), passwordValidator]],
+    confirmPassword: ['', [Validators.required, confirmPasswordValidator]],
+    description: [''],
   });
 
   private readonly registerDisabledSignal = toSignal(
@@ -49,6 +53,18 @@ export class Register {
     }),
   );
 
+  public onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.profileImageBase64.set(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   public async onRegister(): Promise<void> {
     if (this.registerFormGroup.invalid) {
       this.registerFormGroup.markAllAsTouched();
@@ -59,20 +75,24 @@ export class Register {
     const value: IRegister = {
       name: rawValue.name ?? '',
       lastName: rawValue.lastName ?? '',
+      username: rawValue.username ?? '',
       birthDate: new Date(rawValue.birthDate ?? ''),
-      email: rawValue.email ?? '',
       password: rawValue.password ?? '',
+      confirmPassword: rawValue.confirmPassword ?? '',
+      description: rawValue.description ?? '',
+      profileImage: this.profileImageBase64(),
+      role: 'usuario',
     };
 
     const res = await this._authService.register(value);
     if (res.error as IAuthError | null) {
-      const error: IAuthError = res.error as IAuthError; // HECHO PARA QUE TOME EL TIPADO, SINO NO ERA POSIBLE DIFERENCIAR LOS ERRORES -  //TODO: ver si es mejroable!
+      const error: IAuthError = res.error as IAuthError;
       if (error?.code === REGISTER_ERROR_CODES.ALREADY_EXISTS) {
         this._toast.showError(REGISTER_MESSAGES.ALREADY_REGISTERED);
       } else if (error?.reasons?.some((reason) => reason === REGISTER_ERROR_CODES.CHARACTERS)) {
         this._toast.showError(REGISTER_MESSAGES.CHARACTERS_ERROR);
       } else {
-        this._toast.showError('Error al registrarse');
+        this._toast.showError(error?.message || 'Error al registrarse');
       }
     } else {
       this._toast.showSuccess(REGISTER_MESSAGES.SUCCESS);

@@ -31,8 +31,8 @@ export class Login {
   private readonly _toast = inject(ToastService);
 
   public readonly loginFormGroup = this._formBuilder.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6), passwordValidator]],
+    username: ['', [Validators.required]],
+    password: ['', [Validators.required, Validators.minLength(8), passwordValidator]],
   });
 
   private readonly loginDisabledSignal = toSignal(
@@ -59,7 +59,7 @@ export class Login {
 
     const rawValue = this.loginFormGroup.getRawValue();
     await this.generateLogin({
-      email: rawValue.email ?? '',
+      username: rawValue.username ?? '',
       password: rawValue.password ?? '',
     });
   }
@@ -71,8 +71,10 @@ export class Login {
   private async generateLogin(value: ILogin): Promise<void> {
     const res = await this._authService.login(value);
     if (res.error as IAuthError | null) {
-      const error: IAuthError = res.error as IAuthError; // HECHO PARA QUE TOME EL TIPADO, SINO NO ERA POSIBLE DIFERENCIAR LOS ERRORES -  //TODO: ver si es mejroable!
+      const error: IAuthError = res.error as IAuthError;
       if (error?.code === LOGIN_ERROR_CODES.INVALID_CREDENTIALS) {
+        this._toast.showError(LOGIN_MESSAGES.INVALID_CREDENTIALS);
+      } else {
         this._toast.showError(LOGIN_MESSAGES.INVALID_CREDENTIALS);
       }
     } else {

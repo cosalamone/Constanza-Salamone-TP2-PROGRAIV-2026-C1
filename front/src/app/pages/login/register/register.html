@@ -39,6 +39,25 @@
           [control]="registerFormGroup.get('lastName')"
           label="Apellido" />
       </div>
+
+      <div class="form-control">
+        <label
+          class="form-label"
+          for="register-username"
+          >Nombre de usuario:</label
+        >
+        <input
+          id="register-username"
+          class="form-input"
+          type="text"
+          formControlName="username"
+          name="username"
+          placeholder="Nombre de usuario" />
+        <app-form-error-message
+          [control]="registerFormGroup.get('username')"
+          label="Nombre de usuario" />
+      </div>
+
       <div class="form-control">
         <label
           class="form-label"
@@ -57,23 +76,7 @@
           label="Fecha de nacimiento"></app-form-error-message>
       </div>
 
-      <div class="form-control">
-        <label
-          class="form-label"
-          for="register-email"
-          >Correo electrónico:</label
-        >
-        <input
-          id="register-email"
-          class="form-input"
-          type="text"
-          formControlName="email"
-          name="email"
-          placeholder="Correo Electrónico" />
-        <app-form-error-message
-          [control]="registerFormGroup.get('email')"
-          label="Correo electrónico" />
-      </div>
+     
 
       <div class="form-control">
         <label
@@ -91,6 +94,56 @@
         <app-form-error-message
           [control]="registerFormGroup.get('password')"
           label="Contraseña" />
+      </div>
+
+      <div class="form-control">
+        <label
+          class="form-label"
+          for="register-confirm-password"
+          >Repetir contraseña:</label
+        >
+        <input
+          id="register-confirm-password"
+          class="form-input"
+          type="password"
+          formControlName="confirmPassword"
+          name="confirmPassword"
+          placeholder="Repetir contraseña" />
+        <app-form-error-message
+          [control]="registerFormGroup.get('confirmPassword')"
+          label="Repetir contraseña" />
+      </div>
+
+      <div class="form-control">
+        <label
+          class="form-label"
+          for="register-description"
+          >Descripción breve:</label
+        >
+        <textarea
+          id="register-description"
+          class="form-input"
+          formControlName="description"
+          name="description"
+          placeholder="Descripción breve"
+          rows="3"></textarea>
+        <app-form-error-message
+          [control]="registerFormGroup.get('description')"
+          label="Descripción breve" />
+      </div>
+
+      <div class="form-control">
+        <label
+          class="form-label"
+          for="register-profile-image"
+          >Imagen de perfil:</label
+        >
+        <input
+          id="register-profile-image"
+          class="form-input"
+          type="file"
+          accept="image/*"
+          (change)="onFileSelected($event)" />
       </div>
 
       <div class="form-actions">

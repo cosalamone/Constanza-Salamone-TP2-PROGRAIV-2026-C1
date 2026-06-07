@@ -1,7 +1,7 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 const NAME_PATTERN = /^[A-Za-zÀ-ÿÑñ ]+$/;
-const PASSWORD_PATTERN = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z0-9]+$/; // Acepta letras, mayus mins y numeros - al menos 1 de cada uno
+const PASSWORD_PATTERN = /^(?=.*[A-Z])(?=.*\d)[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]*$/; // Al menos 1 mayúscula, 1 número, mín 8 chars validado por minLength
 
 export const nameValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
   if (!control.value) {
@@ -19,6 +19,21 @@ export const passwordValidator: ValidatorFn = (
   }
 
   return PASSWORD_PATTERN.test(control.value) ? null : { passwordPattern: true };
+};
+
+export const confirmPasswordValidator: ValidatorFn = (
+  control: AbstractControl,
+): ValidationErrors | null => {
+  if (!control.value) {
+    return null;
+  }
+
+  const password = control.parent?.get('password');
+  if (!password) {
+    return null;
+  }
+
+  return control.value === password.value ? null : { confirmPasswordMismatch: true };
 };
 
 export function getControlErrorMessage(
@@ -47,7 +62,11 @@ export function getControlErrorMessage(
   }
 
   if (control.errors['passwordPattern']) {
-    return 'La contraseña debe tener al menos una letra y un número, y solo puede contener letras y números.';
+    return 'La contraseña debe tener al menos una mayúscula y un número.';
+  }
+
+  if (control.errors['confirmPasswordMismatch']) {
+    return 'Las contraseñas no coinciden.';
   }
 
   return 'El valor ingresado no es válido.';

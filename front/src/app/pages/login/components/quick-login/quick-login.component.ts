@@ -17,17 +17,17 @@ export class QuickLoginComponent {
   public readonly users: QuickLoginUser[] = [
     {
       title: 'usuario1',
-      email: 'usuario1@mail.com',
+      username: 'usuario1',
       password: 'hola123',
     },
     {
       title: 'usuario2',
-      email: 'usuario2@mail.com',
+      username: 'usuario2',
       password: 'hola123',
     },
     {
       title: 'usuario3',
-      email: 'usuario3@mail.com',
+      username: 'usuario3',
       password: 'hola123',
     },
   ];

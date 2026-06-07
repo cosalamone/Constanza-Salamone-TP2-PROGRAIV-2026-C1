@@ -7,19 +7,19 @@
       <div class="form-control">
         <label
           class="form-label"
-          for="login-email"
-          >Correo electrónico:</label
+          for="login-username"
+          >Nombre de usuario:</label
         >
         <input
-          id="login-email"
+          id="login-username"
           class="form-input"
           type="text"
-          formControlName="email"
-          name="email"
-          placeholder="Correo Electrónico" />
+          formControlName="username"
+          name="username"
+          placeholder="Nombre de usuario" />
         <app-form-error-message
-          [control]="loginFormGroup.get('email')"
-          label="Correo electrónico"></app-form-error-message>
+          [control]="loginFormGroup.get('username')"
+          label="Nombre de usuario"></app-form-error-message>
       </div>
       <div class="form-control">
         <label

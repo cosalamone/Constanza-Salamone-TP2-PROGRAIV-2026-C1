@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './core/components/navbar/navbar.component';
 import { ToastComponent } from './core/components/toast/toast.component';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -11,4 +12,8 @@ import { ToastComponent } from './core/components/toast/toast.component';
 })
 export class App {
   protected readonly title = signal('front');
+
+  public ngOnInit(): void { 
+    console.log(environment.apiUrl);
+  }
 }

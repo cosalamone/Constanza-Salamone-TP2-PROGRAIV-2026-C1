@@ -1,11 +1,14 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { IAuthError, ILogin, IRegister } from '../../core/interfaces/auth-interfaces/auth.interfaces';
+import { UsersApiService } from '../users/users.api.service';
 
 export interface User {
   id: string;
   email: string;
   name: string;
   lastName: string;
+  username: string;
+  role: string;
 }
 
 @Injectable({
@@ -13,6 +16,7 @@ export interface User {
 })
 export class AuthService {
   private readonly _storageKey = 'tp2_current_user';
+  private readonly _usersApiService = inject(UsersApiService);
 
   public currentUser = signal<User | null>(this._loadUser());
 
@@ -36,68 +40,29 @@ export class AuthService {
   }
 
   public async register(data: IRegister): Promise<{ error: IAuthError | null }> {
-    // Mock: simula éxito y guarda el usuario para poder loguearse después
-    const user: User = {
-      id: crypto.randomUUID(),
-      email: data.email,
-      name: data.name,
-      lastName: data.lastName,
-    };
-
-    // Guardar en "base de datos mock" (localStorage con prefijo)
-    const mockDbKey = `tp2_mock_user_${data.email}`;
-    localStorage.setItem(mockDbKey, JSON.stringify({ ...user, password: data.password }));
-
-    return { error: null };
+    return this._usersApiService.create(data);
   }
 
   public async login(data: ILogin): Promise<{ error: IAuthError | null }> {
-    // Mock: permite login con quick-login users o usuarios registrados previamente
-    const quickUsers: Record<string, string> = {
-      'usuario1@mail.com': 'hola123',
-      'usuario2@mail.com': 'hola123',
-      'usuario3@mail.com': 'hola123',
-    };
+    const res = await this._usersApiService.login(data);
+    if (res.error) {
+      return { error: res.error };
+    }
 
-    // Verificar quick users
-    if (quickUsers[data.email] && quickUsers[data.email] === data.password) {
+    if (res.user) {
       const user: User = {
-        id: crypto.randomUUID(),
-        email: data.email,
-        name: data.email.split('@')[0],
-        lastName: 'Usuario',
+        id: res.user._id || res.user.id,
+        email: res.user.email,
+        name: res.user.name,
+        lastName: res.user.lastName,
+        username: res.user.username,
+        role: res.user.role,
       };
       this.currentUser.set(user);
       this._saveUser(user);
-      return { error: null };
     }
 
-    // Verificar usuarios registrados en mock DB
-    const mockDbKey = `tp2_mock_user_${data.email}`;
-    const raw = localStorage.getItem(mockDbKey);
-    if (raw) {
-      const stored = JSON.parse(raw);
-      if (stored.password === data.password) {
-        const user: User = {
-          id: stored.id,
-          email: stored.email,
-          name: stored.name,
-          lastName: stored.lastName,
-        };
-        this.currentUser.set(user);
-        this._saveUser(user);
-        return { error: null };
-      }
-    }
-
-    return {
-      error: {
-        message: 'Credenciales inválidas',
-        code: 'invalid_credentials',
-        status: 401,
-        reasons: [],
-      },
-    };
+    return { error: null };
   }
 
   public async logout(): Promise<void> {
