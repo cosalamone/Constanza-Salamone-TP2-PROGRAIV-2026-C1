@@ -5,6 +5,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { REGISTER_ERROR_CODES, REGISTER_MESSAGES } from './enums/register-messages.enum';
 import { ButtonBaseComponent } from '../../core/components/buttons/button-base/button-base.component';
 import { FormErrorMessageComponent } from '../../core/components/forms/form-error-message/form-error-message.component';
+import { PhotoSlotComponent } from '../../core/components/photo-slot/photo-slot.component';
+import { PhotoCaptureService } from '../../core/services/photo-capture.service';
+import { compressImage } from '../../core/utils/image-compression';
 import { ToastService } from '../../core/services/toast.service';
 import { NavigateToService } from '../../core/services/navigate/navigate-to.service';
 import { nameValidator, passwordValidator, confirmPasswordValidator } from '../../core/utils/form-validation';
@@ -15,7 +18,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, ButtonBaseComponent, DatePickerModule, FormErrorMessageComponent],
+  imports: [ReactiveFormsModule, ButtonBaseComponent, DatePickerModule, FormErrorMessageComponent, PhotoSlotComponent],
   templateUrl: './register.html',
   styleUrls: ['./register.css'],
 })
@@ -24,6 +27,9 @@ export class Register {
   private readonly _authService = inject(AuthService);
   private readonly _toast = inject(ToastService);
   private readonly _navigateToService = inject(NavigateToService);
+  private readonly _photoCaptureService = inject(PhotoCaptureService);
+
+  public readonly profileImage = signal<string | null>(null);
 
   public readonly registerFormGroup = this._formBuilder.group({
     name: ['', [Validators.required, Validators.minLength(2), nameValidator]],
@@ -51,6 +57,14 @@ export class Register {
     }),
   );
 
+   public async handlePhotoClick(): Promise<void> {
+    const dataUrl = await this._photoCaptureService.capturePhoto();
+    if (dataUrl) {
+      const compressed = await compressImage(dataUrl);
+      this.profileImage.set(compressed);
+    }
+   }
+
    public async onRegister(): Promise<void> {
     if (this.registerFormGroup.invalid) {
       this.registerFormGroup.markAllAsTouched();
@@ -67,6 +81,7 @@ export class Register {
       confirmPassword: rawValue.confirmPassword ?? '',
       description: rawValue.description ?? '',
       role: 'usuario',
+      profileImage: this.profileImage() ?? undefined,
     };
 
     try {

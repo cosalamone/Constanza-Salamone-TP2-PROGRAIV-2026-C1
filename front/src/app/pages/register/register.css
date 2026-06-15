@@ -1,0 +1,5 @@
+.photo-slot-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}

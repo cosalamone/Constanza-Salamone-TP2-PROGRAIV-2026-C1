@@ -1,6 +1,16 @@
 <section class="form-section">
   <div class="form-panel">
     <h2>Crear cuenta</h2>
+
+    <div class="photo-slot-container">
+      <app-photo-slot
+        [imageUrl]="profileImage()"
+        placeholderText="Subir foto de perfil"
+        size="lg"
+        shape="circle"
+        (photoClick)="handlePhotoClick()" />
+    </div>
+
     <form
       [formGroup]="registerFormGroup"
       (ngSubmit)="onRegister()">

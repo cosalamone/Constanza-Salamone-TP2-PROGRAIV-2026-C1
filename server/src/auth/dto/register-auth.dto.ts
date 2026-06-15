@@ -28,4 +28,8 @@ export class RegisterAuthDto {
     @IsString()
     @IsOptional()
     role?: string;
+
+    @IsString()
+    @IsOptional()
+    profileImage?: string;
 }

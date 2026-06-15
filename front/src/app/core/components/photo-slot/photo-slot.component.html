@@ -1,0 +1,29 @@
+<div
+  class="photo-slot"
+  [class.photo-slot--sm]="size() === 'sm'"
+  [class.photo-slot--md]="size() === 'md'"
+  [class.photo-slot--lg]="size() === 'lg'"
+  [class.photo-slot--circle]="shape() === 'circle'"
+  [class.photo-slot--square]="shape() === 'square'"
+  (click)="onClick()"
+  role="button"
+  tabindex="0"
+  (keydown.enter)="onClick()"
+  (keydown.space)="onClick()">
+
+  @if (imageUrl()) {
+    <img
+      class="photo-slot__image"
+      [src]="imageUrl()"
+      alt="Foto de perfil" />
+    <div class="photo-slot__overlay">
+      <i class="pi pi-pencil"></i>
+      <span>Cambiar</span>
+    </div>
+  } @else {
+    <div class="photo-slot__placeholder">
+      <i [class]="placeholderIcon()"></i>
+      <span>{{ placeholderText() }}</span>
+    </div>
+  }
+</div>
