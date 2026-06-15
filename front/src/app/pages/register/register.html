@@ -132,20 +132,6 @@
           label="Descripción breve" />
       </div>
 
-      <div class="form-control">
-        <label
-          class="form-label"
-          for="register-profile-image"
-          >Imagen de perfil:</label
-        >
-        <input
-          id="register-profile-image"
-          class="form-input"
-          type="file"
-          accept="image/*"
-          (change)="onFileSelected($event)" />
-      </div>
-
       <div class="form-actions">
         <app-button
           [buttonModel]="registerButtonModel()"

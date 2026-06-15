@@ -12,7 +12,7 @@ export class NavbarComponent {
   private readonly _authService = inject(AuthService);
 
   public readonly menuModel = computed<MenuItem[]>(() => {
-    const currentUser = this._authService.currentUser();
+    const currentUser = true; // TODO, CORREGIR
 
     return [
       {
@@ -30,6 +30,16 @@ export class NavbarComponent {
         icon: 'pi pi-id-card',
         routerLink: '/mi-perfil',
       },
+      {
+        label: 'Registrarse',
+        icon: 'pi pi-user-plus',
+        routerLink: '/registro',
+      },
+      {
+        label: 'Login',
+        icon: 'pi pi-sign-in',
+        routerLink: '/login',
+      },
       ...(currentUser
         ? [
 
@@ -43,16 +53,7 @@ export class NavbarComponent {
             },
           ]
         : [
-            {
-              label: 'Registrarse',
-              icon: 'pi pi-user-plus',
-              routerLink: '/registro',
-            },
-            {
-              label: 'Login',
-              icon: 'pi pi-sign-in',
-              routerLink: '/login',
-            },
+           
           ]),
     ];
   });

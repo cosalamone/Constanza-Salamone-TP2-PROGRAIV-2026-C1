@@ -70,16 +70,18 @@ export class Login {
 
   private async generateLogin(value: ILogin): Promise<void> {
     const res = await this._authService.login(value);
-    if (res.error as IAuthError | null) {
-      const error: IAuthError = res.error as IAuthError;
-      if (error?.code === LOGIN_ERROR_CODES.INVALID_CREDENTIALS) {
-        this._toast.showError(LOGIN_MESSAGES.INVALID_CREDENTIALS);
-      } else {
-        this._toast.showError(LOGIN_MESSAGES.INVALID_CREDENTIALS);
-      }
-    } else {
-      this._toast.showSuccess(LOGIN_MESSAGES.SUCCESS);
-      this._navigateToService.navigateToHome();
-    }
+     this._toast.showSuccess(LOGIN_MESSAGES.SUCCESS);
+    //   this._navigateToService.navigateToHome();
+    // if (res.error as IAuthError | null) {
+    //   const error: IAuthError = res.error as IAuthError;
+    //   if (error?.code === LOGIN_ERROR_CODES.INVALID_CREDENTIALS) {
+    //     this._toast.showError(LOGIN_MESSAGES.INVALID_CREDENTIALS);
+    //   } else {
+    //     this._toast.showError(LOGIN_MESSAGES.INVALID_CREDENTIALS);
+    //   }
+    // } else {
+    //   this._toast.showSuccess(LOGIN_MESSAGES.SUCCESS);
+    //   this._navigateToService.navigateToHome();
+    // }
   }
 }
