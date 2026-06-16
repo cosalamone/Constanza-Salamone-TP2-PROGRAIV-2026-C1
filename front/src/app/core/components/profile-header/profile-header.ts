@@ -11,5 +11,9 @@ import { PhotoSlotComponent } from '../photo-slot/photo-slot.component';
 })
 export class ProfileHeaderComponent {
   public readonly user = input.required<User>();
-  public readonly stats = input.required<{ publications: number; likes: number; comments: number }>();
+  public readonly stats = input.required<{
+    publications: number;
+    likes: number;
+    comments: number;
+  }>();
 }

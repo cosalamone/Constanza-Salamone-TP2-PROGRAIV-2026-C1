@@ -24,7 +24,7 @@ export class AuthService extends ApiBaseService {
   public readonly currentUser = signal<User | null>(this._getStoredUser());
 
   constructor() {
-    super()
+    super();
   }
 
   private _getStoredUser(): User | null {
@@ -49,7 +49,7 @@ export class AuthService extends ApiBaseService {
         const user: User = { ...raw, id: raw._id };
         localStorage.setItem(this._storageKey, JSON.stringify(user));
         this.currentUser.set(user);
-      })
+      }),
     );
   }
 
@@ -57,5 +57,4 @@ export class AuthService extends ApiBaseService {
     localStorage.removeItem(this._storageKey);
     this.currentUser.set(null);
   }
-
 }

@@ -24,10 +24,10 @@ export const routes: Routes = [
   },
   {
     path: 'mi-perfil',
-    loadComponent: () => import('./pages/my-profile/my-profile').then((m) => m.MyProfile), 
+    loadComponent: () => import('./pages/my-profile/my-profile').then((m) => m.MyProfile),
   },
   {
     path: 'publicaciones',
-    loadComponent: () => import('./pages/publications/publications').then((m) => m.Publications), 
-  }
+    loadComponent: () => import('./pages/publications/publications').then((m) => m.Publications),
+  },
 ];

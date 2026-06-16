@@ -8,7 +8,7 @@ import { environment } from '../environments/environment';
   selector: 'app-root',
   imports: [RouterOutlet, NavbarComponent, ToastComponent],
   templateUrl: './app.html',
-  styleUrls: ['./app.css']
+  styleUrls: ['./app.css'],
 })
 export class App {
   protected readonly sidebarCollapsed = signal(false);

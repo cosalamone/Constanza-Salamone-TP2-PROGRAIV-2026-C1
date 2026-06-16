@@ -8,7 +8,9 @@
   border: 2px dashed #ccc;
   background: #f8f8f8;
   border-radius: 50%;
-  transition: border-color 0.2s, background 0.2s;
+  transition:
+    border-color 0.2s,
+    background 0.2s;
 }
 
 .photo-slot:hover {

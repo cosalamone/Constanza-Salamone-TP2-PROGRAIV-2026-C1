@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class PublicationServices extends ApiBaseService {
-
   public createPublication(publicationRequest: PublicationRequest): Observable<any> {
     return this._httpClient.post(`${this._apiUrl}/publications`, publicationRequest);
   }

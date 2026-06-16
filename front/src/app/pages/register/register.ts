@@ -10,7 +10,11 @@ import { PhotoCaptureService } from '../../core/services/photo-capture.service';
 import { compressImage } from '../../core/utils/image-compression';
 import { ToastService } from '../../core/services/toast.service';
 import { NavigateToService } from '../../core/services/navigate/navigate-to.service';
-import { nameValidator, passwordValidator, confirmPasswordValidator } from '../../core/utils/form-validation';
+import {
+  nameValidator,
+  passwordValidator,
+  confirmPasswordValidator,
+} from '../../core/utils/form-validation';
 import { RegisterButtonModel } from '../../core/models/buttons/register-button.model';
 import { IAuthError, IRegister } from '../../core/interfaces/auth-interfaces/auth.interfaces';
 import { AuthService } from '../../services/auth/auth.service';
@@ -18,7 +22,13 @@ import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, ButtonBaseComponent, DatePickerModule, FormErrorMessageComponent, PhotoSlotComponent],
+  imports: [
+    ReactiveFormsModule,
+    ButtonBaseComponent,
+    DatePickerModule,
+    FormErrorMessageComponent,
+    PhotoSlotComponent,
+  ],
   templateUrl: './register.html',
   styleUrls: ['./register.css'],
 })
@@ -57,15 +67,15 @@ export class Register {
     }),
   );
 
-   public async handlePhotoClick(): Promise<void> {
+  public async handlePhotoClick(): Promise<void> {
     const dataUrl = await this._photoCaptureService.capturePhoto();
     if (dataUrl) {
       const compressed = await compressImage(dataUrl);
       this.profileImage.set(compressed);
     }
-   }
+  }
 
-   public onRegister(): void {
+  public onRegister(): void {
     if (this.registerFormGroup.invalid) {
       this.registerFormGroup.markAllAsTouched();
       return;
@@ -95,12 +105,16 @@ export class Register {
         const errorResponse = error?.error;
         if (errorResponse?.code === REGISTER_ERROR_CODES.ALREADY_EXISTS) {
           this._toast.showError(REGISTER_MESSAGES.ALREADY_REGISTERED);
-        } else if (errorResponse?.reasons?.some((reason: string) => reason === REGISTER_ERROR_CODES.CHARACTERS)) {
+        } else if (
+          errorResponse?.reasons?.some(
+            (reason: string) => reason === REGISTER_ERROR_CODES.CHARACTERS,
+          )
+        ) {
           this._toast.showError(REGISTER_MESSAGES.CHARACTERS_ERROR);
         } else {
           this._toast.showError(errorResponse?.message || 'Error al registrarse');
         }
       },
     });
-   }
+  }
 }

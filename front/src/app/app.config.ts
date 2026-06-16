@@ -21,5 +21,5 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     { provide: MessageService, useClass: MessageService },
-  ]
+  ],
 };
