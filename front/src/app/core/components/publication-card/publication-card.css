@@ -35,18 +35,16 @@
 }
 
 .pub-card__delete-btn {
-  background: none;
-  border: none;
-  color: var(--color-text-light);
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 6px;
-  transition: background 0.2s, color 0.2s;
+  background: none !important;
+  border: none !important;
+  color: var(--color-text-light) !important;
+  padding: 0.5rem !important;
+  border-radius: 6px !important;
 }
 
 .pub-card__delete-btn:hover {
-  background: rgba(214, 69, 69, 0.15);
-  color: var(--color-danger);
+  background: rgba(214, 69, 69, 0.15) !important;
+  color: var(--color-danger) !important;
 }
 
 .pub-card__image img {
@@ -85,27 +83,23 @@
 }
 
 .pub-card__action-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 20px;
-  padding: 0.35rem 0.75rem;
-  color: var(--color-text-light);
-  cursor: pointer;
+  gap: 0.4rem !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-radius: 20px !important;
+  padding: 0.35rem 0.75rem !important;
+  color: var(--color-text-light) !important;
   font-size: 0.8rem;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
 .pub-card__action-btn:hover {
-  background: rgba(64, 224, 198, 0.1);
-  border-color: rgba(64, 224, 198, 0.2);
+  background: rgba(64, 224, 198, 0.1) !important;
+  border-color: rgba(64, 224, 198, 0.2) !important;
 }
 
 .pub-card__action-btn.liked {
-  color: var(--color-primary);
-  border-color: rgba(64, 224, 198, 0.3);
+  color: var(--color-primary) !important;
+  border-color: rgba(64, 224, 198, 0.3) !important;
 }
 
 .pub-card__comments {

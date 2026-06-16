@@ -2,20 +2,8 @@
   <header class="publications-page__header">
     <h1 class="publications-page__title">Publicaciones</h1>
     <div class="publications-page__sort">
-      <button
-        class="publications-page__sort-btn"
-        [class.publications-page__sort-btn--active]="sortMode() === 'date'"
-        (click)="onSortChange('date')"
-      >
-        Recientes
-      </button>
-      <button
-        class="publications-page__sort-btn"
-        [class.publications-page__sort-btn--active]="sortMode() === 'likes'"
-        (click)="onSortChange('likes')"
-      >
-        Más gustadas
-      </button>
+      <app-button [buttonModel]="sortDateButtonModel()"></app-button>
+      <app-button [buttonModel]="sortLikesButtonModel()"></app-button>
     </div>
   </header>
 
@@ -28,8 +16,7 @@
         [showComments]="false"
         [canDelete]="pub.userId === currentUserId()"
         (likeToggled)="onLikeToggle($event)"
-        (deleteRequested)="onDelete($event)"
-      />
+        (deleteRequested)="onDelete($event)" />
     }
   </div>
 
@@ -40,6 +27,5 @@
     (onPageChange)="onPageChange($event)"
     [showCurrentPageReport]="false"
     [showJumpToPageDropdown]="false"
-    [showPageLinks]="false"
-  />
+    [showPageLinks]="false" />
 </section>

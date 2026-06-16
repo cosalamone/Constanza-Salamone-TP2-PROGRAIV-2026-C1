@@ -9,23 +9,24 @@
         shape="circle"
         placeholderIcon="pi pi-user"
         placeholderText=""
-        [readonly]="true"
-      />
+        [readonly]="true" />
       <div class="pub-card__user-info">
-        <span class="pub-card__username">{{ publication().user.name }} {{ publication().user.lastName }}</span>
+        <span class="pub-card__username"
+          >{{ publication().user.name }} {{ publication().user.lastName }}</span
+        >
         <span class="pub-card__time">{{ timeAgo() }}</span>
       </div>
     </div>
     @if (canDelete()) {
-      <button class="pub-card__delete-btn" (click)="onDelete()" title="Eliminar publicación">
-        <i class="pi pi-trash"></i>
-      </button>
+      <app-button [buttonModel]="deleteButtonModel()"></app-button>
     }
   </header>
 
   @if (publication().imageUrl) {
     <div class="pub-card__image">
-      <img [src]="publication().imageUrl" [alt]="publication().title" />
+      <img
+        [src]="publication().imageUrl"
+        [alt]="publication().title" />
     </div>
   }
 
@@ -36,14 +37,8 @@
 
   <footer class="pub-card__footer">
     <div class="pub-card__actions">
-      <button class="pub-card__action-btn" [class.liked]="publication().isLikedByCurrentUser" (click)="onLike()">
-        <i class="pi" [class.pi-heart]="!publication().isLikedByCurrentUser" [class.pi-heart-fill]="publication().isLikedByCurrentUser"></i>
-        <span>{{ publication().likes }}</span>
-      </button>
-      <button class="pub-card__action-btn">
-        <i class="pi pi-comment"></i>
-        <span>{{ publication().comments.length }}</span>
-      </button>
+      <app-button [buttonModel]="likeButtonModel()"></app-button>
+      <app-button [buttonModel]="commentButtonModel()"></app-button>
     </div>
   </footer>
 
@@ -59,10 +54,11 @@
             shape="circle"
             placeholderIcon="pi pi-user"
             placeholderText=""
-            [readonly]="true"
-          />
+            [readonly]="true" />
           <div class="pub-card__comment-body">
-            <span class="pub-card__comment-author">{{ comment.user.name }} {{ comment.user.lastName }}</span>
+            <span class="pub-card__comment-author"
+              >{{ comment.user.name }} {{ comment.user.lastName }}</span
+            >
             <span class="pub-card__comment-text">{{ comment.text }}</span>
           </div>
         </div>

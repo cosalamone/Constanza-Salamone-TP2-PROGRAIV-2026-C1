@@ -2,6 +2,10 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { PhotoSlotComponent } from '../photo-slot/photo-slot.component';
+import { ButtonBaseComponent } from '../buttons/button-base/button-base.component';
+import { ButtonIconModel } from '../../models/buttons/icons-buttons/button-icon.model';
+import { ButtonCommonModel } from '../../models/buttons/button-common.model';
+import { of } from 'rxjs';
 
 interface SidebarItem {
   label: string;
@@ -12,7 +16,7 @@ interface SidebarItem {
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive, PhotoSlotComponent],
+  imports: [RouterLink, RouterLinkActive, PhotoSlotComponent, ButtonBaseComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
@@ -25,6 +29,41 @@ export class NavbarComponent {
   public readonly navItemActivated = output<void>();
 
   public readonly currentUser = this._authService.currentUser;
+
+  public readonly collapseButtonModel = computed(
+    () =>
+      new ButtonIconModel({
+        iconName: this.collapsed() ? 'pi pi-angle-right' : 'pi pi-angle-left',
+        action: () => this.toggleCollapse.emit(),
+        permission: of({ allowed: true }),
+        styleClass: 'collapse-btn',
+        tooltipMessage: 'Colapsar menú',
+      }),
+  );
+
+  public readonly closeButtonModel = computed(
+    () =>
+      new ButtonIconModel({
+        iconName: 'pi pi-times',
+        action: () => this.toggleCollapse.emit(),
+        permission: of({ allowed: true }),
+        styleClass: 'close-btn',
+        tooltipMessage: 'Cerrar menú',
+      }),
+  );
+
+  public getSidebarItemButtonModel(item: SidebarItem): ButtonCommonModel {
+    return new ButtonCommonModel({
+      iconName: item.icon,
+      label: item.label,
+      action: () => {
+        this.onNavItemClick();
+        item.action?.();
+      },
+      permission: of({ allowed: true }),
+      styleClass: 'sidebar-item',
+    });
+  }
 
   public readonly menuItems = computed<SidebarItem[]>(() => {
     const user = this.currentUser();
@@ -54,7 +93,7 @@ export class NavbarComponent {
   });
 
   public onNavItemClick(): void {
-    if(window.innerWidth <= 768) {
+    if (window.innerWidth <= 768) {
       this.toggleCollapse.emit();
     }
   }

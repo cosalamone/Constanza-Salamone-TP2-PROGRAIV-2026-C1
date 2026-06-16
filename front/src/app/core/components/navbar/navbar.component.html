@@ -1,6 +1,13 @@
-<aside class="sidebar" [class.collapsed]="collapsed()">
-  <div class="sidebar-header" (click)="onMobileHeaderClick()">
-    <a class="sidebar-logo" routerLink="/publicaciones" (click)="$event.stopPropagation()">
+<aside
+  class="sidebar"
+  [class.collapsed]="collapsed()">
+  <div
+    class="sidebar-header"
+    (click)="onMobileHeaderClick()">
+    <a
+      class="sidebar-logo"
+      routerLink="/publicaciones"
+      (click)="$event.stopPropagation()">
       @if (collapsed()) {
         <i class="pi pi-verified logo-icon"></i>
       } @else {
@@ -8,12 +15,8 @@
         <span class="logo-text">RedSocial</span>
       }
     </a>
-    <button class="collapse-btn" (click)="toggleCollapse.emit()" aria-label="Colapsar menú">
-      <i class="pi" [class.pi-angle-left]="!collapsed()" [class.pi-angle-right]="collapsed()"></i>
-    </button>
-    <button class="close-btn" (click)="toggleCollapse.emit()" aria-label="Cerrar menú">
-      <i class="pi pi-times"></i>
-    </button>
+    <app-button [buttonModel]="collapseButtonModel()"></app-button>
+    <app-button [buttonModel]="closeButtonModel()"></app-button>
   </div>
 
   <nav class="sidebar-nav">
@@ -24,27 +27,23 @@
           [routerLink]="item.route"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: false }"
-          (click)="onNavItemClick()"
-        >
+          (click)="onNavItemClick()">
           <i [class]="item.icon"></i>
           @if (!collapsed()) {
             <span class="sidebar-item-label">{{ item.label }}</span>
           }
         </a>
       } @else {
-        <button class="sidebar-item" (click)="onNavItemClick(); item.action!()">
-          <i [class]="item.icon"></i>
-          @if (!collapsed()) {
-            <span class="sidebar-item-label">{{ item.label }}</span>
-          }
-        </button>
+        <app-button [buttonModel]="getSidebarItemButtonModel(item)"></app-button>
       }
     }
   </nav>
 
   @if (currentUser(); as user) {
     <div class="sidebar-footer">
-      <div class="sidebar-user" [class.justify-center]="collapsed()">
+      <div
+        class="sidebar-user"
+        [class.justify-center]="collapsed()">
         <app-photo-slot
           [imageUrl]="user.profileImage ?? null"
           [name]="user.name"
@@ -53,8 +52,7 @@
           shape="circle"
           placeholderIcon="pi pi-user"
           placeholderText=""
-          [readonly]="true"
-        />
+          [readonly]="true" />
         @if (!collapsed()) {
           <div class="sidebar-user-info">
             <span class="sidebar-user-name">{{ user.username }}</span>

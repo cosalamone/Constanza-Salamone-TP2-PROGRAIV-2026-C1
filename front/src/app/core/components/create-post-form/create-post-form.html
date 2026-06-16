@@ -8,18 +8,18 @@
       shape="circle"
       placeholderIcon="pi pi-user"
       placeholderText=""
-      [readonly]="true"
-    />
+      [readonly]="true" />
     <span class="create-post__username">{{ user()?.name }} {{ user()?.lastName }}</span>
   </div>
 
-  <form [formGroup]="form" class="create-post__form">
+  <form
+    [formGroup]="form"
+    class="create-post__form">
     <input
       type="text"
       class="create-post__title-input"
       formControlName="title"
-      placeholder="Título de tu publicación"
-    />
+      placeholder="Título de tu publicación" />
     @if (form.get('title')?.invalid && form.get('title')?.touched) {
       <span class="create-post__error">El título es obligatorio</span>
     }
@@ -28,8 +28,7 @@
       class="create-post__description-input"
       formControlName="description"
       placeholder="¿Qué querés compartir?"
-      rows="3"
-    ></textarea>
+      rows="3"></textarea>
     @if (form.get('description')?.invalid && form.get('description')?.touched) {
       <span class="create-post__error">La descripción es obligatoria</span>
     }
@@ -37,23 +36,17 @@
 
   @if (imagePreview()) {
     <div class="create-post__image-preview">
-      <img [src]="imagePreview()" alt="Vista previa" />
-      <button class="create-post__remove-image" (click)="removeImage()">
-        <i class="pi pi-times"></i>
-      </button>
+      <img
+        [src]="imagePreview()"
+        alt="Vista previa" />
+      <app-button [buttonModel]="removeImageButtonModel()"></app-button>
     </div>
   }
 
   <div class="create-post__actions">
     <div class="create-post__attachments">
-      <button class="create-post__attach-btn" type="button" (click)="handlePhotoClick()">
-        <i class="pi pi-image"></i>
-        <span>Foto / video</span>
-      </button>
+      <app-button [buttonModel]="attachPhotoButtonModel()"></app-button>
     </div>
-    <button class="create-post__submit-btn" type="button" (click)="onSubmit()" [disabled]="form.invalid">
-      <i class="pi pi-send"></i>
-      <span>Publicar</span>
-    </button>
+    <app-button [buttonModel]="submitButtonModel()"></app-button>
   </div>
 </div>
