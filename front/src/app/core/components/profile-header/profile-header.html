@@ -1,0 +1,40 @@
+<section class="profile">
+  <div class="profile__info">
+    <app-photo-slot
+      [imageUrl]="user().profileImage ?? null"
+      [name]="user().name"
+      [lastName]="user().lastName"
+      size="lg"
+      shape="circle"
+      placeholderIcon="pi pi-user"
+      placeholderText=""
+      [readonly]="true"
+    />
+
+    <div class="profile__details">
+      <h1 class="profile__name">{{ user().name }} {{ user().lastName }}</h1>
+      <p class="profile__username">@{{ user().username }} · {{ user().role }}</p>
+      <p class="profile__description">{{ user().description }}</p>
+
+      <div class="profile__stats">
+        <div class="profile__stat">
+          <span class="profile__stat-value">{{ stats().publications }}</span>
+          <span class="profile__stat-label">publicaciones</span>
+        </div>
+        <div class="profile__stat">
+          <span class="profile__stat-value">{{ stats().likes }}</span>
+          <span class="profile__stat-label">me gustas</span>
+        </div>
+        <div class="profile__stat">
+          <span class="profile__stat-value">{{ stats().comments }}</span>
+          <span class="profile__stat-label">comentarios</span>
+        </div>
+      </div>
+
+      <!-- <button class="profile__edit-btn">
+        <i class="pi pi-pencil"></i>
+        <span>Editar perfil</span>
+      </button> -->
+    </div>
+  </div>
+</section>

@@ -1,0 +1,72 @@
+<article class="pub-card">
+  <header class="pub-card__header">
+    <div class="pub-card__user">
+      <app-photo-slot
+        [imageUrl]="publication().user.profileImage ?? null"
+        [name]="publication().user.name"
+        [lastName]="publication().user.lastName"
+        size="sm"
+        shape="circle"
+        placeholderIcon="pi pi-user"
+        placeholderText=""
+        [readonly]="true"
+      />
+      <div class="pub-card__user-info">
+        <span class="pub-card__username">{{ publication().user.name }} {{ publication().user.lastName }}</span>
+        <span class="pub-card__time">{{ timeAgo() }}</span>
+      </div>
+    </div>
+    @if (canDelete()) {
+      <button class="pub-card__delete-btn" (click)="onDelete()" title="Eliminar publicación">
+        <i class="pi pi-trash"></i>
+      </button>
+    }
+  </header>
+
+  @if (publication().imageUrl) {
+    <div class="pub-card__image">
+      <img [src]="publication().imageUrl" [alt]="publication().title" />
+    </div>
+  }
+
+  <div class="pub-card__content">
+    <h3 class="pub-card__title">{{ publication().title }}</h3>
+    <p class="pub-card__description">{{ publication().description }}</p>
+  </div>
+
+  <footer class="pub-card__footer">
+    <div class="pub-card__actions">
+      <button class="pub-card__action-btn" [class.liked]="publication().isLikedByCurrentUser" (click)="onLike()">
+        <i class="pi" [class.pi-heart]="!publication().isLikedByCurrentUser" [class.pi-heart-fill]="publication().isLikedByCurrentUser"></i>
+        <span>{{ publication().likes }}</span>
+      </button>
+      <button class="pub-card__action-btn">
+        <i class="pi pi-comment"></i>
+        <span>{{ publication().comments.length }}</span>
+      </button>
+    </div>
+  </footer>
+
+  @if (showComments() && publication().comments.length > 0) {
+    <section class="pub-card__comments">
+      @for (comment of publication().comments; track comment.id) {
+        <div class="pub-card__comment">
+          <app-photo-slot
+            [imageUrl]="comment.user.profileImage ?? null"
+            [name]="comment.user.name"
+            [lastName]="comment.user.lastName"
+            size="sm"
+            shape="circle"
+            placeholderIcon="pi pi-user"
+            placeholderText=""
+            [readonly]="true"
+          />
+          <div class="pub-card__comment-body">
+            <span class="pub-card__comment-author">{{ comment.user.name }} {{ comment.user.lastName }}</span>
+            <span class="pub-card__comment-text">{{ comment.text }}</span>
+          </div>
+        </div>
+      }
+    </section>
+  }
+</article>

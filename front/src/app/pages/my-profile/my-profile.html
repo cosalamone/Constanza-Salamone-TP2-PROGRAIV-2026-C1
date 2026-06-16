@@ -1,1 +1,25 @@
-<p>my-profile works!</p>
+<section class="profile-page">
+  @if (profileData(); as data) {
+    <app-profile-header [user]="data.user" [stats]="data.stats" />
+
+    <div class="profile-page__publications">
+      <h2 class="profile-page__section-title">Últimas publicaciones</h2>
+
+      <div class="profile-page__list">
+        @for (pub of publications(); track pub.id) {
+          <app-publication-card
+            [publication]="pub"
+            [showComments]="true"
+            [canDelete]="pub.userId === currentUserId()"
+          />
+        } @empty {
+          <p class="profile-page__empty">Aún no tenés publicaciones.</p>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="profile-page__no-user">
+      <p>No se encontraron datos del perfil.</p>
+    </div>
+  }
+</section>
