@@ -11,9 +11,12 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.css']
 })
 export class App {
-  protected readonly title = signal('front');
+  protected readonly sidebarCollapsed = signal(false);
 
-  public ngOnInit(): void { 
+  public ngOnInit(): void {
+    if (typeof window !== 'undefined') {
+      this.sidebarCollapsed.set(window.innerWidth <= 768);
+    }
     console.log(environment.apiUrl);
   }
 }
