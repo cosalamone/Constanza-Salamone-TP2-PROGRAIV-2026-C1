@@ -1,3 +1,16 @@
-<app-navbar></app-navbar>
-<router-outlet></router-outlet>
-<app-toast></app-toast>
+<div class="app-layout">
+  <app-navbar
+    [collapsed]="sidebarCollapsed()"
+    (toggleCollapse)="sidebarCollapsed.update(v => !v)"
+    (navItemActivated)="sidebarCollapsed.set(true)"
+  />
+  <main class="app-main">
+    <router-outlet />
+  </main>
+</div>
+
+@if (!sidebarCollapsed()) {
+  <div class="sidebar-backdrop" (click)="sidebarCollapsed.set(true)"></div>
+}
+
+<app-toast />

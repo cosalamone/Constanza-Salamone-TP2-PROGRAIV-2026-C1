@@ -1,46 +1,67 @@
-import { Component, computed, inject } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { MenubarModule } from 'primeng/menubar';
+import { Component, computed, inject, input, output } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
 import { PhotoSlotComponent } from '../photo-slot/photo-slot.component';
-import { NgStyle } from '@angular/common';
+
+interface SidebarItem {
+  label: string;
+  icon: string;
+  route?: string;
+  action?: () => void;
+}
 
 @Component({
   selector: 'app-navbar',
-  imports: [MenubarModule, PhotoSlotComponent, NgStyle],
+  imports: [RouterLink, RouterLinkActive, PhotoSlotComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
   private readonly _authService = inject(AuthService);
+  private readonly _router = inject(Router);
+
+  public readonly collapsed = input(false);
+  public readonly toggleCollapse = output<void>();
+  public readonly navItemActivated = output<void>();
 
   public readonly currentUser = this._authService.currentUser;
 
-  public readonly menuModel = computed<MenuItem[]>(() => {
+  public readonly menuItems = computed<SidebarItem[]>(() => {
     const user = this.currentUser();
 
-    const items: MenuItem[] = [
-      { label: 'Home', icon: 'pi pi-home', routerLink: '/inicio' },
-      { label: 'Publicaciones', icon: 'pi pi-image', routerLink: '/publicaciones' },
-      { label: 'Mi perfil', icon: 'pi pi-id-card', routerLink: '/mi-perfil' },
+    const items: SidebarItem[] = [
+      { label: 'Inicio', icon: 'pi pi-images', route: '/publicaciones' },
+      { label: 'Mi perfil', icon: 'pi pi-id-card', route: '/mi-perfil' },
     ];
 
     if (user) {
       items.push({
         label: 'Cerrar sesión',
         icon: 'pi pi-sign-out',
-        command: () => {
+        action: () => {
           this._authService.logout();
+          this._router.navigate(['/login']);
         },
-        routerLink: '/login',
       });
     } else {
       items.push(
-        { label: 'Registrarse', icon: 'pi pi-user-plus', routerLink: '/registro' },
-        { label: 'Login', icon: 'pi pi-sign-in', routerLink: '/login' },
+        { label: 'Registrarse', icon: 'pi pi-user-plus', route: '/registro' },
+        { label: 'Login', icon: 'pi pi-sign-in', route: '/login' },
       );
     }
 
     return items;
   });
+
+  public onNavItemClick(): void {
+    if(window.innerWidth <= 768) {
+      this.toggleCollapse.emit();
+    }
+  }
+
+  public onMobileHeaderClick(): void {
+    if (window.innerWidth <= 768 && !this.collapsed()) {
+      this.toggleCollapse.emit();
+    }
+  }
 }

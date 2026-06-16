@@ -1,18 +1,64 @@
-<div class="card">
-  <p-menubar [model]="menuModel()">
-    <ng-template pTemplate="end">
-      @if (currentUser(); as user) {
-        <div class="navbar-avatar" [ngStyle]="{ display: 'flex', alignItems: 'center', marginLeft: '0.5rem' }">
-          <app-photo-slot
-            [imageUrl]="user.profileImage ?? null"
-            size="sm"
-            shape="circle"
-            placeholderIcon="pi pi-user"
-            placeholderText=""
-            [readonly]="true"
-          />
-        </div>
+<aside class="sidebar" [class.collapsed]="collapsed()">
+  <div class="sidebar-header" (click)="onMobileHeaderClick()">
+    <a class="sidebar-logo" routerLink="/publicaciones" (click)="$event.stopPropagation()">
+      @if (collapsed()) {
+        <i class="pi pi-verified logo-icon"></i>
+      } @else {
+        <i class="pi pi-verified logo-icon"></i>
+        <span class="logo-text">RedSocial</span>
       }
-    </ng-template>
-  </p-menubar>
-</div>
+    </a>
+    <button class="collapse-btn" (click)="toggleCollapse.emit()" aria-label="Colapsar menú">
+      <i class="pi" [class.pi-angle-left]="!collapsed()" [class.pi-angle-right]="collapsed()"></i>
+    </button>
+    <button class="close-btn" (click)="toggleCollapse.emit()" aria-label="Cerrar menú">
+      <i class="pi pi-times"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (item of menuItems(); track item.label) {
+      @if (item.route) {
+        <a
+          class="sidebar-item"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: false }"
+          (click)="onNavItemClick()"
+        >
+          <i [class]="item.icon"></i>
+          @if (!collapsed()) {
+            <span class="sidebar-item-label">{{ item.label }}</span>
+          }
+        </a>
+      } @else {
+        <button class="sidebar-item" (click)="onNavItemClick(); item.action!()">
+          <i [class]="item.icon"></i>
+          @if (!collapsed()) {
+            <span class="sidebar-item-label">{{ item.label }}</span>
+          }
+        </button>
+      }
+    }
+  </nav>
+
+  @if (currentUser(); as user) {
+    <div class="sidebar-footer">
+      <div class="sidebar-user" [class.justify-center]="collapsed()">
+        <app-photo-slot
+          [imageUrl]="user.profileImage ?? null"
+          size="sm"
+          shape="circle"
+          placeholderIcon="pi pi-user"
+          placeholderText=""
+          [readonly]="true"
+        />
+        @if (!collapsed()) {
+          <div class="sidebar-user-info">
+            <span class="sidebar-user-name">{{ user.username }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</aside>
