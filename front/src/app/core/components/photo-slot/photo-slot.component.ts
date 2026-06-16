@@ -11,10 +11,12 @@ export class PhotoSlotComponent {
   public readonly placeholderIcon = input<string>('pi pi-camera');
   public readonly size = input<'sm' | 'md' | 'lg'>('md');
   public readonly shape = input<'square' | 'circle'>('circle');
+  public readonly readonly = input<boolean>(false);
 
   public readonly photoClick = output<void>();
 
   public onClick(): void {
+    if (this.readonly()) return;
     this.photoClick.emit();
   }
 }

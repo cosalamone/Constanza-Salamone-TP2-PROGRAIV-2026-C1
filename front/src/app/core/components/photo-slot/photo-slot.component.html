@@ -5,6 +5,7 @@
   [class.photo-slot--lg]="size() === 'lg'"
   [class.photo-slot--circle]="shape() === 'circle'"
   [class.photo-slot--square]="shape() === 'square'"
+  [class.photo-slot--readonly]="readonly()"
   (click)="onClick()"
   role="button"
   tabindex="0"
@@ -16,14 +17,20 @@
       class="photo-slot__image"
       [src]="imageUrl()"
       alt="Foto de perfil" />
-    <div class="photo-slot__overlay">
-      <i class="pi pi-pencil"></i>
-      <span>Cambiar</span>
-    </div>
+    @if (!readonly()) {
+      <div class="photo-slot__overlay">
+        <i class="pi pi-pencil"></i>
+        <span>Cambiar</span>
+      </div>
+    }
   } @else {
     <div class="photo-slot__placeholder">
-      <i [class]="placeholderIcon()"></i>
-      <span>{{ placeholderText() }}</span>
+      @if (readonly()) {
+        <i class="pi pi-user"></i>
+      } @else {
+        <i [class]="placeholderIcon()"></i>
+        <span>{{ placeholderText() }}</span>
+      }
     </div>
   }
 </div>
