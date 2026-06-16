@@ -10,11 +10,5 @@ import { AuthService } from '../../services/auth/auth.service';
 export class Home {
   private readonly _authService = inject(AuthService);
 
-  public get userName(): string {
-    return this._authService.getCurrentUserFullName();
-  }
-
-  public get isLoggedIn(): boolean {
-    return this._authService.currentUser() !== null;
-  }
+  public readonly currentUser = this._authService.currentUser;
 }

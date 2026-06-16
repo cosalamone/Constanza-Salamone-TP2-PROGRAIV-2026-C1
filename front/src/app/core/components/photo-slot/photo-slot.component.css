@@ -1,0 +1,124 @@
+.photo-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px dashed #ccc;
+  background: #f8f8f8;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.photo-slot:hover {
+  border-color: #999;
+  background: #f0f0f0;
+}
+
+.photo-slot--readonly {
+  cursor: default;
+  border: 2px solid var(--color-primary);
+  background: transparent;
+}
+
+.photo-slot--readonly:hover {
+  border-color: var(--color-primary);
+  background: transparent;
+}
+
+.photo-slot:focus-visible {
+  outline: 2px solid #4a90d9;
+  outline-offset: 2px;
+}
+
+/* Sizes */
+.photo-slot--sm {
+  width: 64px;
+  height: 64px;
+}
+
+.photo-slot--md {
+  width: 120px;
+  height: 120px;
+}
+
+.photo-slot--lg {
+  width: 180px;
+  height: 180px;
+}
+
+/* Shapes */
+.photo-slot--circle {
+  border-radius: 50%;
+}
+
+.photo-slot--square {
+  border-radius: 8px;
+}
+
+/* Image */
+.photo-slot__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Overlay */
+.photo-slot__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.photo-slot:hover .photo-slot__overlay {
+  opacity: 1;
+}
+
+.photo-slot__overlay i {
+  font-size: 1.25rem;
+}
+
+/* Placeholder */
+.photo-slot__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #888;
+  text-align: center;
+  padding: 8px;
+}
+
+.photo-slot--sm .photo-slot__placeholder i {
+  font-size: 1.25rem;
+}
+
+.photo-slot--md .photo-slot__placeholder i {
+  font-size: 1.75rem;
+}
+
+.photo-slot--lg .photo-slot__placeholder i {
+  font-size: 2.25rem;
+}
+
+.photo-slot--sm .photo-slot__placeholder span {
+  font-size: 0.6rem;
+}
+
+.photo-slot--md .photo-slot__placeholder span {
+  font-size: 0.7rem;
+}
+
+.photo-slot--lg .photo-slot__placeholder span {
+  font-size: 0.8rem;
+}

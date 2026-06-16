@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { isLoggedInGuard } from './core/guards/is-logged-in-guard';
 
 export const routes: Routes = [
   {
@@ -21,16 +20,14 @@ export const routes: Routes = [
   },
   {
     path: 'registro',
-    loadComponent: () => import('./pages/login/register/register').then((m) => m.Register),
+    loadComponent: () => import('./pages/register/register').then((m) => m.Register),
   },
   {
     path: 'mi-perfil',
     loadComponent: () => import('./pages/my-profile/my-profile').then((m) => m.MyProfile), 
-    canActivate: [isLoggedInGuard],
   },
   {
     path: 'publicaciones',
     loadComponent: () => import('./pages/publications/publications').then((m) => m.Publications), 
-    canActivate: [isLoggedInGuard], // TODO: ver el otro guard que habia faltado antes
   }
 ];

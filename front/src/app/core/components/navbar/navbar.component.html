@@ -1,3 +1,18 @@
 <div class="card">
-  <p-menubar [model]="menuModel()" />
+  <p-menubar [model]="menuModel()">
+    <ng-template pTemplate="end">
+      @if (currentUser(); as user) {
+        <div class="navbar-avatar" [ngStyle]="{ display: 'flex', alignItems: 'center', marginLeft: '0.5rem' }">
+          <app-photo-slot
+            [imageUrl]="user.profileImage ?? null"
+            size="sm"
+            shape="circle"
+            placeholderIcon="pi pi-user"
+            placeholderText=""
+            [readonly]="true"
+          />
+        </div>
+      }
+    </ng-template>
+  </p-menubar>
 </div>
