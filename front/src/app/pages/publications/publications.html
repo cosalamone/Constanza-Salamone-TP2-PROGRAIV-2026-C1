@@ -1,1 +1,45 @@
-<p>publications works!</p>
+<section class="publications-page">
+  <header class="publications-page__header">
+    <h1 class="publications-page__title">Publicaciones</h1>
+    <div class="publications-page__sort">
+      <button
+        class="publications-page__sort-btn"
+        [class.publications-page__sort-btn--active]="sortMode() === 'date'"
+        (click)="onSortChange('date')"
+      >
+        Recientes
+      </button>
+      <button
+        class="publications-page__sort-btn"
+        [class.publications-page__sort-btn--active]="sortMode() === 'likes'"
+        (click)="onSortChange('likes')"
+      >
+        Más gustadas
+      </button>
+    </div>
+  </header>
+
+  <app-create-post-form />
+
+  <div class="publications-page__list">
+    @for (pub of publications(); track pub.id) {
+      <app-publication-card
+        [publication]="pub"
+        [showComments]="false"
+        [canDelete]="pub.userId === currentUserId()"
+        (likeToggled)="onLikeToggle($event)"
+        (deleteRequested)="onDelete($event)"
+      />
+    }
+  </div>
+
+  <p-paginator
+    [totalRecords]="totalRecords()"
+    [rows]="publicationsPerPage"
+    [first]="currentPage() * publicationsPerPage"
+    (onPageChange)="onPageChange($event)"
+    [showCurrentPageReport]="false"
+    [showJumpToPageDropdown]="false"
+    [showPageLinks]="false"
+  />
+</section>

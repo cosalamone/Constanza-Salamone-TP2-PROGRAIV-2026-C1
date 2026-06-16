@@ -65,7 +65,7 @@ export class Register {
     }
    }
 
-   public async onRegister(): Promise<void> {
+   public onRegister(): void {
     if (this.registerFormGroup.invalid) {
       this.registerFormGroup.markAllAsTouched();
       return;
@@ -84,21 +84,23 @@ export class Register {
       profileImage: this.profileImage() ?? undefined,
     };
 
-    try {
-      const res = await this._authService.register(value);
-      console.log('res', res);
-      this._toast.showSuccess(REGISTER_MESSAGES.SUCCESS);
-      this._navigateToService.navigateToLogin();
-    } catch (error: any) {
-      console.error('Error al registrarse:', error);
-      const errorResponse = error?.error;
-      if (errorResponse?.code === REGISTER_ERROR_CODES.ALREADY_EXISTS) {
-        this._toast.showError(REGISTER_MESSAGES.ALREADY_REGISTERED);
-      } else if (errorResponse?.reasons?.some((reason: string) => reason === REGISTER_ERROR_CODES.CHARACTERS)) {
-        this._toast.showError(REGISTER_MESSAGES.CHARACTERS_ERROR);
-      } else {
-        this._toast.showError(errorResponse?.message || 'Error al registrarse');
-      }
-    }
+    this._authService.register(value).subscribe({
+      next: (res) => {
+        console.log('res', res);
+        this._toast.showSuccess(REGISTER_MESSAGES.SUCCESS);
+        this._navigateToService.navigateToLogin();
+      },
+      error: (error) => {
+        console.error('Error al registrarse:', error);
+        const errorResponse = error?.error;
+        if (errorResponse?.code === REGISTER_ERROR_CODES.ALREADY_EXISTS) {
+          this._toast.showError(REGISTER_MESSAGES.ALREADY_REGISTERED);
+        } else if (errorResponse?.reasons?.some((reason: string) => reason === REGISTER_ERROR_CODES.CHARACTERS)) {
+          this._toast.showError(REGISTER_MESSAGES.CHARACTERS_ERROR);
+        } else {
+          this._toast.showError(errorResponse?.message || 'Error al registrarse');
+        }
+      },
+    });
    }
 }

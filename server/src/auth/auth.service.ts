@@ -39,14 +39,14 @@ export class AuthService {
     return userWithoutPassword;
   }
 
-private async _saveProfileImage(username: string, dataUrl: string): Promise<string> {
-  const result = await this._cloudinary.uploader.upload(dataUrl, {
-    folder: 'profile-images',
-    public_id: `profile-${username}-${Date.now()}`,
-  });
+  private async _saveProfileImage(username: string, dataUrl: string): Promise<string> {
+    const result = await this._cloudinary.uploader.upload(dataUrl, {
+      folder: 'profile-images',
+      public_id: `profile-${username}-${Date.now()}`,
+    });
 
-  return result.secure_url;
-}
+    return result.secure_url;
+  }
 
   async login(username: string, password: string) {
     const user = await this._userModel.findOne({ username });
