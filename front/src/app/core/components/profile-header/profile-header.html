@@ -1,12 +1,15 @@
 <section class="profile">
   <div class="profile__info">
-    <div class="profile__avatar-wrapper">
-      @if (user().profileImage) {
-        <img [src]="user().profileImage" [alt]="user().name" class="profile__avatar-img" />
-      } @else {
-        <div class="profile__avatar-initials">{{ userInitials() }}</div>
-      }
-    </div>
+    <app-photo-slot
+      [imageUrl]="user().profileImage ?? null"
+      [name]="user().name"
+      [lastName]="user().lastName"
+      size="lg"
+      shape="circle"
+      placeholderIcon="pi pi-user"
+      placeholderText=""
+      [readonly]="true"
+    />
 
     <div class="profile__details">
       <h1 class="profile__name">{{ user().name }} {{ user().lastName }}</h1>

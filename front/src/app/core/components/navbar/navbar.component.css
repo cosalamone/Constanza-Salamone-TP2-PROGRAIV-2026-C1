@@ -253,8 +253,4 @@
     justify-content: flex-start;
   }
 
-  .sidebar-user :deep(.photo-slot--sm) {
-    width: 40px;
-    height: 40px;
-  }
 }
