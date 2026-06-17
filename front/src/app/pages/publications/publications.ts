@@ -1,6 +1,6 @@
-import { Component, inject, signal, computed } from '@angular/core';
-import { MockDataService } from '../../services/mock-data.service';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth/auth.service';
+import { PublicationServices } from '../../services/publication/publication.services';
 import { IPublication } from '../../core/interfaces/publication.interface';
 import { PublicationCardComponent } from '../../core/components/publication-card/publication-card';
 import { CreatePostFormComponent } from '../../core/components/create-post-form/create-post-form';
@@ -16,27 +16,16 @@ import { of } from 'rxjs';
   templateUrl: './publications.html',
   styleUrls: ['./publications.css'],
 })
-export class Publications {
-  private readonly _mockData = inject(MockDataService);
+export class Publications implements OnInit {
   private readonly _authService = inject(AuthService);
+  private readonly _publicationService = inject(PublicationServices);
 
   public readonly sortMode = signal<'date' | 'likes'>('date');
   public readonly currentPage = signal<number>(0);
   public readonly publicationsPerPage = 10;
 
-  public readonly publications = computed(() => {
-    const result = this._mockData.getPublications(
-      this.sortMode(),
-      this.currentPage() + 1,
-      this.publicationsPerPage,
-    );
-    return result.publications;
-  });
-
-  public readonly totalRecords = computed(() => {
-    const result = this._mockData.getPublications(this.sortMode(), 1, this.publicationsPerPage);
-    return result.total;
-  });
+  public readonly publications = signal<IPublication[]>([]);
+  public readonly totalRecords = signal<number>(0);
 
   public readonly currentUserId = computed(() => this._authService.currentUser()?.id);
 
@@ -66,22 +55,43 @@ export class Publications {
       }),
   );
 
+  ngOnInit(): void {
+    this.loadPublications();
+  }
+
   public onSortChange(mode: 'date' | 'likes'): void {
     this.sortMode.set(mode);
     this.currentPage.set(0);
+    this.loadPublications();
   }
 
   public onPageChange(event: { page?: number; rows?: number; first?: number }): void {
     this.currentPage.set(event.page ?? 0);
+    this.loadPublications();
   }
 
   public onLikeToggle(publicationId: string): void {
-    this._mockData.toggleLike(publicationId);
-    this.sortMode.update((v) => v);
+    this.loadPublications();
   }
 
   public onDelete(publicationId: string): void {
-    this._mockData.deletePublication(publicationId);
-    this.sortMode.update((v) => v);
+    this.loadPublications();
+  }
+
+  public loadPublications(): void {
+    this._publicationService
+      .getPublications({
+        page: this.currentPage() + 1,
+        limit: this.publicationsPerPage,
+        sort: this.sortMode(),
+        currentUserId: this._authService.currentUser()?.id,
+      })
+      .subscribe({
+        next: (response) => {
+          this.publications.set(response.publications as IPublication[]);
+          this.totalRecords.set(response.total);
+        },
+        error: (err) => console.error('Error loading publications', err),
+      });
   }
 }

@@ -7,7 +7,7 @@
     </div>
   </header>
 
-  <app-create-post-form />
+  <app-create-post-form (publicationCreated)="loadPublications()" />
 
   <div class="publications-page__list">
     @for (pub of publications(); track pub.id) {

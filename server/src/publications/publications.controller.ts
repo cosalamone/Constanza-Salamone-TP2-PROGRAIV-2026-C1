@@ -1,4 +1,4 @@
-import { Controller,  Post, Body,} from '@nestjs/common';
+import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { PublicationsService } from './publications.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 
@@ -11,4 +11,20 @@ export class PublicationsController {
     return this.publicationsService.create(createPublicationDto, userId);
   }
 
+  @Get()
+  findAll(
+    @Query('page') page: string,
+    @Query('limit') limit: string,
+    @Query('sort') sort: string,
+    @Query('userId') userId: string,
+    @Query('currentUserId') currentUserId: string,
+  ) {
+    return this.publicationsService.findAll({
+      page: Number(page) || 1,
+      limit: Number(limit) || 10,
+      sort: sort || 'date',
+      userId,
+      currentUserId,
+    });
+  }
 }
