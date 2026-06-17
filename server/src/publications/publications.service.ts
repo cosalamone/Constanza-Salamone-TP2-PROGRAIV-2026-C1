@@ -9,6 +9,7 @@ import { CLOUDINARY } from '../cloudinary/cloudinary.provider';
 export class PublicationsService {
   constructor(
     @InjectModel('Publication') private readonly publicationModel: Model<Publication>,
+    @InjectModel('User') private readonly userModel: Model<any>,
     @Inject(CLOUDINARY) private readonly _cloudinary: any,
   ) {}
 
@@ -110,5 +111,29 @@ export class PublicationsService {
           return currentUserId && likeId === currentUserId;
         }) ?? false,
     };
+  }
+
+  async remove(id: string, userId: string) {
+    const publication = await this.publicationModel.findById(id).exec();
+    if (!publication) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    const user = await this.userModel.findById(userId).exec();
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+
+    const isAuthor = publication.userId.toString() === userId;
+    const isAdmin = user.role === 'admin';
+
+    if (!isAuthor && !isAdmin) {
+      throw new ForbiddenException('No tenés permiso para eliminar esta publicación');
+    }
+
+    publication._deleted = true;
+    await publication.save();
+
+    return { message: 'Publicación eliminada correctamente' };
   }
 }

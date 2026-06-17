@@ -12,6 +12,12 @@ export class PublicationServices extends ApiBaseService {
     return this._httpClient.post(`${this._apiUrl}/publications`, publicationRequest);
   }
 
+  public deletePublication(id: string, userId: string): Observable<any> {
+    return this._httpClient.delete(`${this._apiUrl}/publications/${id}`, {
+      params: { userId },
+    });
+  }
+
   public getPublications(params: {
     page: number;
     limit: number;
