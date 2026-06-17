@@ -28,6 +28,16 @@ export class PublicationsController {
     });
   }
 
+  @Post(':id/like')
+  addLike(@Param('id') id: string, @Body('userId') userId: string) {
+    return this.publicationsService.addLike(id, userId);
+  }
+
+  @Delete(':id/like')
+  removeLike(@Param('id') id: string, @Query('userId') userId: string) {
+    return this.publicationsService.removeLike(id, userId);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string, @Query('userId') userId: string) {
     return this.publicationsService.remove(id, userId);

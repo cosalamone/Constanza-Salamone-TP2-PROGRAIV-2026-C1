@@ -47,6 +47,7 @@ export class Publications implements OnInit {
         label: 'Recientes',
         action: () => this.onSortChange('date'),
         permission: of({ allowed: true }),
+        style: this.sortMode() === 'date' ? 'filled' : 'outlined',
         styleClass:
           this.sortMode() === 'date'
             ? 'publications-page__sort-btn publications-page__sort-btn--active'
@@ -60,6 +61,7 @@ export class Publications implements OnInit {
         label: 'Más gustadas',
         action: () => this.onSortChange('likes'),
         permission: of({ allowed: true }),
+        style: this.sortMode() === 'likes' ? 'filled' : 'outlined',
         styleClass:
           this.sortMode() === 'likes'
             ? 'publications-page__sort-btn publications-page__sort-btn--active'
@@ -83,7 +85,27 @@ export class Publications implements OnInit {
   }
 
   public onLikeToggle(publicationId: string): void {
-    this.loadPublications();
+    const userId = this._authService.currentUser()?.id;
+    if (!userId) return;
+
+    const publication = this.publications().find((p) => p.id === publicationId);
+    if (!publication) return;
+
+    const request$ = publication.isLikedByCurrentUser
+      ? this._publicationService.removeLike(publicationId, userId)
+      : this._publicationService.addLike(publicationId, userId);
+
+    request$.subscribe({
+      next: (updatedPub) => {
+        this.publications.update((pubs) =>
+          pubs.map((p) => (p.id === publicationId ? { ...p, ...updatedPub } : p)),
+        );
+      },
+      error: (err) => {
+        console.error('Error toggling like', err);
+        this.loadPublications();
+      },
+    });
   }
 
   public onDelete(publicationId: string): void {

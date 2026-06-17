@@ -113,6 +113,57 @@ export class PublicationsService {
     };
   }
 
+  async addLike(id: string, userId: string) {
+    const publication = await this.publicationModel
+      .findById(id)
+      .populate('userId', 'name lastName username profileImage')
+      .populate('comments.user', 'name lastName username profileImage')
+      .populate('likes', 'name lastName')
+      .exec();
+
+    if (!publication) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    const alreadyLiked = publication.likes.some(
+      (l: any) => (l._id ?? l).toString() === userId,
+    );
+
+    if (!alreadyLiked) {
+      const userObjectId = new Types.ObjectId(userId);
+      publication.likes.push(userObjectId);
+      await publication.save();
+    }
+
+    return this._mapPublication(publication, userId);
+  }
+
+  async removeLike(id: string, userId: string) {
+    const publication = await this.publicationModel
+      .findById(id)
+      .populate('userId', 'name lastName username profileImage')
+      .populate('comments.user', 'name lastName username profileImage')
+      .populate('likes', 'name lastName')
+      .exec();
+
+    if (!publication) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    const alreadyLiked = publication.likes.some(
+      (l: any) => (l._id ?? l).toString() === userId,
+    );
+
+    if (alreadyLiked) {
+      publication.likes = publication.likes.filter(
+        (l: any) => (l._id ?? l).toString() !== userId,
+      );
+      await publication.save();
+    }
+
+    return this._mapPublication(publication, userId);
+  }
+
   async remove(id: string, userId: string) {
     const publication = await this.publicationModel.findById(id).exec();
     if (!publication) {

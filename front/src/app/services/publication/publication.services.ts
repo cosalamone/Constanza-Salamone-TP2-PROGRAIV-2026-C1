@@ -18,6 +18,16 @@ export class PublicationServices extends ApiBaseService {
     });
   }
 
+  public addLike(id: string, userId: string): Observable<any> {
+    return this._httpClient.post(`${this._apiUrl}/publications/${id}/like`, { userId });
+  }
+
+  public removeLike(id: string, userId: string): Observable<any> {
+    return this._httpClient.delete(`${this._apiUrl}/publications/${id}/like`, {
+      params: { userId },
+    });
+  }
+
   public getPublications(params: {
     page: number;
     limit: number;

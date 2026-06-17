@@ -25,9 +25,11 @@
     [rows]="publicationsPerPage"
     [first]="currentPage() * publicationsPerPage"
     (onPageChange)="onPageChange($event)"
-    [showCurrentPageReport]="false"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Página {currentPage} de {totalPages}"
     [showJumpToPageDropdown]="false"
-    [showPageLinks]="false" />
+    [showPageLinks]="true"
+    [pageLinkSize]="5" />
 
   <p-confirm-dialog
     styleClass="pub-confirm-dialog"
