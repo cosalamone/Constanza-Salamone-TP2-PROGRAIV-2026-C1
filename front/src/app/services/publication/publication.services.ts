@@ -1,0 +1,53 @@
+import { Injectable } from '@angular/core';
+import { ApiBaseService } from '../api/api-base.service';
+import { PublicationRequest } from './publication-request.interface';
+import { PublicationResponse } from './publication-response.interface';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class PublicationServices extends ApiBaseService {
+  public createPublication(publicationRequest: PublicationRequest): Observable<any> {
+    return this._httpClient.post(`${this._apiUrl}/publications`, publicationRequest);
+  }
+
+  public deletePublication(id: string, userId: string): Observable<any> {
+    return this._httpClient.delete(`${this._apiUrl}/publications/${id}`, {
+      params: { userId },
+    });
+  }
+
+  public addLike(id: string, userId: string): Observable<any> {
+    return this._httpClient.post(`${this._apiUrl}/publications/${id}/like`, { userId });
+  }
+
+  public removeLike(id: string, userId: string): Observable<any> {
+    return this._httpClient.delete(`${this._apiUrl}/publications/${id}/like`, {
+      params: { userId },
+    });
+  }
+
+  public getPublications(params: {
+    page: number;
+    limit: number;
+    sort: string;
+    userId?: string;
+    currentUserId?: string;
+  }): Observable<PublicationResponse> {
+    const queryParams: any = {
+      page: params.page,
+      limit: params.limit,
+      sort: params.sort,
+    };
+    if (params.userId) {
+      queryParams.userId = params.userId;
+    }
+    if (params.currentUserId) {
+      queryParams.currentUserId = params.currentUserId;
+    }
+    return this._httpClient.get<PublicationResponse>(`${this._apiUrl}/publications`, {
+      params: queryParams,
+    });
+  }
+}

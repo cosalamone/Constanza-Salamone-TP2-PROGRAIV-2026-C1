@@ -3,6 +3,7 @@
   [class.photo-slot--sm]="size() === 'sm'"
   [class.photo-slot--md]="size() === 'md'"
   [class.photo-slot--lg]="size() === 'lg'"
+  [class.photo-slot--xl]="size() === 'xl'"
   [class.photo-slot--circle]="shape() === 'circle'"
   [class.photo-slot--square]="shape() === 'square'"
   [class.photo-slot--readonly]="readonly()"
@@ -11,7 +12,6 @@
   tabindex="0"
   (keydown.enter)="onClick()"
   (keydown.space)="onClick()">
-
   @if (imageUrl()) {
     <img
       class="photo-slot__image"
@@ -24,13 +24,13 @@
       </div>
     }
   } @else {
-    <div class="photo-slot__placeholder">
-      @if (readonly()) {
-        <i class="pi pi-user"></i>
-      } @else {
+    @if (readonly()) {
+      <span class="photo-slot__initials">{{ initials() }}</span>
+    } @else {
+      <div class="photo-slot__placeholder">
         <i [class]="placeholderIcon()"></i>
         <span>{{ placeholderText() }}</span>
-      }
-    </div>
+      </div>
+    }
   }
 </div>

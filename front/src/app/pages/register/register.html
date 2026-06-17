@@ -6,7 +6,7 @@
       <app-photo-slot
         [imageUrl]="profileImage()"
         placeholderText="Subir foto de perfil"
-        size="lg"
+        size="xl"
         shape="circle"
         (photoClick)="handlePhotoClick()" />
     </div>
@@ -85,8 +85,6 @@
           [control]="registerFormGroup.get('birthDate')"
           label="Fecha de nacimiento"></app-form-error-message>
       </div>
-
-     
 
       <div class="form-control">
         <label

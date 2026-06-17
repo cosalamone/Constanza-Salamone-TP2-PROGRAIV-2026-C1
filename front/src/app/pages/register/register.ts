@@ -10,7 +10,11 @@ import { PhotoCaptureService } from '../../core/services/photo-capture.service';
 import { compressImage } from '../../core/utils/image-compression';
 import { ToastService } from '../../core/services/toast.service';
 import { NavigateToService } from '../../core/services/navigate/navigate-to.service';
-import { nameValidator, passwordValidator, confirmPasswordValidator } from '../../core/utils/form-validation';
+import {
+  nameValidator,
+  passwordValidator,
+  confirmPasswordValidator,
+} from '../../core/utils/form-validation';
 import { RegisterButtonModel } from '../../core/models/buttons/register-button.model';
 import { IAuthError, IRegister } from '../../core/interfaces/auth-interfaces/auth.interfaces';
 import { AuthService } from '../../services/auth/auth.service';
@@ -18,7 +22,13 @@ import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, ButtonBaseComponent, DatePickerModule, FormErrorMessageComponent, PhotoSlotComponent],
+  imports: [
+    ReactiveFormsModule,
+    ButtonBaseComponent,
+    DatePickerModule,
+    FormErrorMessageComponent,
+    PhotoSlotComponent,
+  ],
   templateUrl: './register.html',
   styleUrls: ['./register.css'],
 })
@@ -57,17 +67,20 @@ export class Register {
     }),
   );
 
-   public async handlePhotoClick(): Promise<void> {
+  public async handlePhotoClick(): Promise<void> {
     const dataUrl = await this._photoCaptureService.capturePhoto();
     if (dataUrl) {
       const compressed = await compressImage(dataUrl);
       this.profileImage.set(compressed);
     }
-   }
+  }
 
-   public async onRegister(): Promise<void> {
-    if (this.registerFormGroup.invalid) {
+  public onRegister(): void {
+    if (this.registerFormGroup.invalid || !this.profileImage()) {
       this.registerFormGroup.markAllAsTouched();
+      if (!this.profileImage()) {
+        this._toast.showError('Debe seleccionar una foto de perfil');
+      }
       return;
     }
 
@@ -81,24 +94,30 @@ export class Register {
       confirmPassword: rawValue.confirmPassword ?? '',
       description: rawValue.description ?? '',
       role: 'usuario',
-      profileImage: this.profileImage() ?? undefined,
+      profileImage: this.profileImage()!,
     };
 
-    try {
-      const res = await this._authService.register(value);
-      console.log('res', res);
-      this._toast.showSuccess(REGISTER_MESSAGES.SUCCESS);
-      this._navigateToService.navigateToLogin();
-    } catch (error: any) {
-      console.error('Error al registrarse:', error);
-      const errorResponse = error?.error;
-      if (errorResponse?.code === REGISTER_ERROR_CODES.ALREADY_EXISTS) {
-        this._toast.showError(REGISTER_MESSAGES.ALREADY_REGISTERED);
-      } else if (errorResponse?.reasons?.some((reason: string) => reason === REGISTER_ERROR_CODES.CHARACTERS)) {
-        this._toast.showError(REGISTER_MESSAGES.CHARACTERS_ERROR);
-      } else {
-        this._toast.showError(errorResponse?.message || 'Error al registrarse');
-      }
-    }
-   }
+    this._authService.register(value).subscribe({
+      next: (res) => {
+        console.log('res', res);
+        this._toast.showSuccess(REGISTER_MESSAGES.SUCCESS);
+        this._navigateToService.navigateToLogin();
+      },
+      error: (error) => {
+        console.error('Error al registrarse:', error);
+        const errorResponse = error?.error;
+        if (errorResponse?.code === REGISTER_ERROR_CODES.ALREADY_EXISTS) {
+          this._toast.showError(REGISTER_MESSAGES.ALREADY_REGISTERED);
+        } else if (
+          errorResponse?.reasons?.some(
+            (reason: string) => reason === REGISTER_ERROR_CODES.CHARACTERS,
+          )
+        ) {
+          this._toast.showError(REGISTER_MESSAGES.CHARACTERS_ERROR);
+        } else {
+          this._toast.showError(errorResponse?.message || 'Error al registrarse');
+        }
+      },
+    });
+  }
 }

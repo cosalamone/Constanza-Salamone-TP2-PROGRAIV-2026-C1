@@ -1,1 +1,37 @@
-<p>publications works!</p>
+<section class="publications-page">
+  <header class="publications-page__header">
+    <h1 class="publications-page__title">Publicaciones</h1>
+    <div class="publications-page__sort">
+      <app-button [buttonModel]="sortDateButtonModel()"></app-button>
+      <app-button [buttonModel]="sortLikesButtonModel()"></app-button>
+    </div>
+  </header>
+
+  <app-create-post-form (publicationCreated)="loadPublications()" />
+
+  <div class="publications-page__list">
+    @for (pub of publications(); track pub.id) {
+      <app-publication-card
+        [publication]="pub"
+        [showComments]="false"
+        [canDelete]="pub.userId === currentUserId()"
+        (likeToggled)="onLikeToggle($event)"
+        (deleteRequested)="onDelete($event)" />
+    }
+  </div>
+
+  <p-paginator
+    [totalRecords]="totalRecords()"
+    [rows]="publicationsPerPage"
+    [first]="currentPage() * publicationsPerPage"
+    (onPageChange)="onPageChange($event)"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Página {currentPage} de {totalPages}"
+    [showJumpToPageDropdown]="false"
+    [showPageLinks]="true"
+    [pageLinkSize]="5" />
+
+  <p-confirm-dialog
+    styleClass="pub-confirm-dialog"
+  />
+</section>

@@ -5,11 +5,9 @@ import { inject, Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class ApiBaseService {
+  protected readonly _apiUrl = 'http://localhost:3000';
 
-    protected readonly _apiUrl = 'http://localhost:3000';
+  protected _httpClient = inject(HttpClient);
 
-    protected _httpClient = inject(HttpClient);
-
-    constructor() {  }
-
+  constructor() {}
 }

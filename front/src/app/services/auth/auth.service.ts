@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { ILogin, IRegister } from '../../core/interfaces/auth-interfaces/auth.interfaces';
 import { HttpClient } from '@angular/common/http';
 import { ApiBaseService } from '../api/api-base.service';
-import { firstValueFrom } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
 export interface User {
   id: string;
@@ -24,7 +24,7 @@ export class AuthService extends ApiBaseService {
   public readonly currentUser = signal<User | null>(this._getStoredUser());
 
   constructor() {
-    super()
+    super();
   }
 
   private _getStoredUser(): User | null {
@@ -39,22 +39,22 @@ export class AuthService extends ApiBaseService {
     return null;
   }
 
-
-   public async register(registerData: IRegister): Promise<Object> {
-    return firstValueFrom(this._httpClient.post(`${this._apiUrl}/auth/register`, registerData));
+  public register(registerData: IRegister): Observable<any> {
+    return this._httpClient.post(`${this._apiUrl}/auth/register`, registerData);
   }
 
-
-  public async login(loginData: ILogin): Promise<User> {
-    const user = await firstValueFrom(this._httpClient.post<User>(`${this._apiUrl}/auth/login`, loginData));
-    localStorage.setItem(this._storageKey, JSON.stringify(user));
-    this.currentUser.set(user);
-    return user;
+  public login(loginData: ILogin): Observable<User> {
+    return this._httpClient.post<User>(`${this._apiUrl}/auth/login`, loginData).pipe(
+      tap((raw: any) => {
+        const user: User = { ...raw, id: raw._id };
+        localStorage.setItem(this._storageKey, JSON.stringify(user));
+        this.currentUser.set(user);
+      }),
+    );
   }
 
   public logout(): void {
     localStorage.removeItem(this._storageKey);
     this.currentUser.set(null);
   }
-
 }

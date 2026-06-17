@@ -57,7 +57,9 @@ body {
   margin: 0;
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family:
+    ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scrollbar-width: thin;
@@ -639,3 +641,86 @@ section {
     gap: 0.75rem;
   }
 }
+
+/* #region Confirm Dialog - Override PrimeNG Aura Theme */
+.pub-confirm-dialog,
+.pub-confirm-dialog .p-dialog,
+.pub-confirm-dialog .p-dialog-root {
+  --p-dialog-background: var(--color-surface) !important;
+  --p-dialog-color: var(--color-text) !important;
+  --p-dialog-border-color: rgba(255, 255, 255, 0.08) !important;
+  --p-dialog-border-radius: 12px !important;
+  --p-dialog-shadow: 0 8px 32px rgba(0, 0, 0, 0.4) !important;
+
+  --p-dialog-header-background: transparent !important;
+  --p-dialog-header-border-color: rgba(255, 255, 255, 0.08) !important;
+  --p-dialog-header-color: var(--color-text) !important;
+
+  --p-dialog-content-background: transparent !important;
+  --p-dialog-content-color: var(--color-text-light) !important;
+
+  --p-dialog-footer-background: transparent !important;
+  --p-dialog-footer-border-color: rgba(255, 255, 255, 0.08) !important;
+
+  background: var(--color-surface) !important;
+  color: var(--color-text) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.pub-confirm-dialog .p-dialog-header {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: 1rem 1.25rem !important;
+}
+
+.pub-confirm-dialog .p-dialog-title {
+  color: var(--color-text) !important;
+  font-weight: 600 !important;
+}
+
+.pub-confirm-dialog .p-dialog-content {
+  background: transparent !important;
+  padding: 1.25rem !important;
+  color: var(--color-text-light) !important;
+}
+
+.pub-confirm-dialog .p-dialog-icon {
+  color: var(--color-warning) !important;
+}
+
+.pub-confirm-dialog .p-confirm-dialog-message {
+  color: var(--color-text-light) !important;
+}
+
+.pub-confirm-dialog .p-dialog-footer {
+  background: transparent !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: 0.75rem 1.25rem !important;
+}
+
+.pub-confirm-dialog .p-button.p-confirm-dialog-accept {
+  background: var(--color-danger) !important;
+  border-color: var(--color-danger) !important;
+  color: #fff !important;
+}
+
+.pub-confirm-dialog .p-button.p-confirm-dialog-accept:hover {
+  background: #c0392b !important;
+  border-color: #c0392b !important;
+}
+
+.pub-confirm-dialog .p-button.p-confirm-dialog-reject {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: var(--color-text-light) !important;
+}
+
+.pub-confirm-dialog .p-button.p-confirm-dialog-reject:hover {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.p-confirm-dialog-mask {
+  background: rgba(0, 0, 0, 0.6) !important;
+}
+/* #endregion Confirm Dialog */

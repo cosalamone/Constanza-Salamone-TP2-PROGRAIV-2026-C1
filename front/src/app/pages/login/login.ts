@@ -51,30 +51,32 @@ export class Login {
     }),
   );
 
-  public async onLogin(): Promise<void> {
+  public onLogin(): void {
     if (this.loginFormGroup.invalid) {
       this.loginFormGroup.markAllAsTouched();
       return;
     }
 
     const rawValue = this.loginFormGroup.getRawValue();
-    await this.generateLogin({
+    this.generateLogin({
       username: rawValue.username ?? '',
       password: rawValue.password ?? '',
     });
   }
 
-  public async onQuickLogin(credentials: ILogin): Promise<void> {
-    await this.generateLogin(credentials);
+  public onQuickLogin(credentials: ILogin): void {
+    this.generateLogin(credentials);
   }
 
-  private async generateLogin(value: ILogin): Promise<void> {
-    try {
-      await this._authService.login(value);
-      this._toast.showSuccess(LOGIN_MESSAGES.SUCCESS);
-      this._navigateToService.navigateToHome();
-    } catch {
-      this._toast.showError(LOGIN_MESSAGES.INVALID_CREDENTIALS);
-    }
+  private generateLogin(value: ILogin): void {
+    this._authService.login(value).subscribe({
+      next: () => {
+        this._toast.showSuccess(LOGIN_MESSAGES.SUCCESS);
+        this._navigateToService.navigateToHome();
+      },
+      error: () => {
+        this._toast.showError(LOGIN_MESSAGES.INVALID_CREDENTIALS);
+      },
+    });
   }
 }

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
-
 export class PhotoCaptureService {
   private _resolve: ((value: string | null) => void) | null = null;
 
