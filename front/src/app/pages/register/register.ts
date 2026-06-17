@@ -76,8 +76,11 @@ export class Register {
   }
 
   public onRegister(): void {
-    if (this.registerFormGroup.invalid) {
+    if (this.registerFormGroup.invalid || !this.profileImage()) {
       this.registerFormGroup.markAllAsTouched();
+      if (!this.profileImage()) {
+        this._toast.showError('Debe seleccionar una foto de perfil');
+      }
       return;
     }
 
@@ -91,7 +94,7 @@ export class Register {
       confirmPassword: rawValue.confirmPassword ?? '',
       description: rawValue.description ?? '',
       role: 'usuario',
-      profileImage: this.profileImage() ?? undefined,
+      profileImage: this.profileImage()!,
     };
 
     this._authService.register(value).subscribe({

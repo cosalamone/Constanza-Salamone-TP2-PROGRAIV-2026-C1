@@ -41,6 +41,7 @@ export class PublicationCardComponent {
     () =>
       new ButtonIconModel({
         iconName: 'pi pi-trash',
+        style: 'outlined',
         action: () => this.onDelete(),
         permission: of({ allowed: true }),
         styleClass: 'pub-card__delete-btn',
@@ -55,6 +56,7 @@ export class PublicationCardComponent {
         label: `${this.publication().likes}`,
         action: () => this.onLike(),
         permission: of({ allowed: true }),
+        style: 'outlined',
         styleClass: this.publication().isLikedByCurrentUser
           ? 'pub-card__action-btn liked'
           : 'pub-card__action-btn',
@@ -67,6 +69,7 @@ export class PublicationCardComponent {
         iconName: 'pi pi-comment',
         label: `${this.publication().comments.length}`,
         action: () => {},
+        style: 'outlined',
         permission: of({ allowed: true }),
         styleClass: 'pub-card__action-btn',
       }),

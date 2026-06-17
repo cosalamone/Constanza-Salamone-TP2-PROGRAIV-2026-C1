@@ -58,6 +58,7 @@ export class CreatePostFormComponent {
       new ButtonCommonModel({
         iconName: 'pi pi-image',
         label: 'Foto / video',
+        style: 'outlined',
         action: () => this.handlePhotoClick(),
         permission: of({ allowed: true }),
         styleClass: 'create-post__attach-btn',
