@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, SortOrder, Types } from 'mongoose';
 import { Publication } from './entities/publication.schema';
 import { CreatePublicationDto } from './dto/create-publication.dto';
+import { CreateCommentDto } from './dto/create-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CLOUDINARY } from '../cloudinary/cloudinary.provider';
 
 @Injectable()
@@ -13,21 +15,21 @@ export class PublicationsService {
     @Inject(CLOUDINARY) private readonly _cloudinary: any,
   ) {}
 
-  async create(createPublicationDto: CreatePublicationDto, userId: string): Promise<Publication> {
-    let imageUrl: string | undefined;
+  // region Publicaciones
+  public async create(
+    createPublicationDto: CreatePublicationDto,
+    userId: string,
+  ): Promise<Publication> {
+    const imageUrl = createPublicationDto.imageUrl
+      ? await this._uploadImage(createPublicationDto.imageUrl)
+      : undefined;
 
-    if (createPublicationDto.imageUrl) {
-      imageUrl = await this._uploadImage(createPublicationDto.imageUrl);
-    }
-
-    const publication = await this.publicationModel.create({
+    return this.publicationModel.create({
       title: createPublicationDto.title,
       description: createPublicationDto.description,
       imageUrl,
       userId,
     });
-
-    return publication;
   }
 
   private async _uploadImage(dataUrl: string): Promise<string> {
@@ -52,9 +54,8 @@ export class PublicationsService {
       filter.userId = userId;
     }
 
-    const sortOption: Record<string, SortOrder> = sort === 'likes'
-      ? { 'likes.length': -1 }
-      : { createdAt: -1 };
+    const sortOption: Record<string, SortOrder> =
+      sort === 'likes' ? { 'likes.length': -1 } : { createdAt: -1 };
 
     const [publications, total] = await Promise.all([
       this.publicationModel
@@ -78,97 +79,8 @@ export class PublicationsService {
     };
   }
 
-  private _mapPublication(pub: any, currentUserId?: string) {
-    const userId = pub.userId?._id ?? pub.userId;
-    return {
-      id: pub._id,
-      title: pub.title,
-      description: pub.description,
-      imageUrl: pub.imageUrl,
-      userId: userId?.toString?.() ?? userId,
-      user: {
-        name: pub.userId?.name ?? '',
-        lastName: pub.userId?.lastName ?? '',
-        username: pub.userId?.username ?? '',
-        profileImage: pub.userId?.profileImage ?? '',
-      },
-      likes: pub.likes?.length ?? 0,
-      comments: (pub.comments ?? []).map((c: any) => ({
-        id: c._id,
-        text: c.text,
-        user: {
-          name: c.user?.name ?? '',
-          lastName: c.user?.lastName ?? '',
-          username: c.user?.username ?? '',
-          profileImage: c.user?.profileImage ?? '',
-        },
-        createdAt: c.createdAt,
-      })),
-      createdAt: pub.createdAt,
-      isLikedByCurrentUser:
-        pub.likes?.some((l: any) => {
-          const likeId = (l._id ?? l)?.toString?.() ?? (l._id ?? l);
-          return currentUserId && likeId === currentUserId;
-        }) ?? false,
-    };
-  }
-
-  async addLike(id: string, userId: string) {
-    const publication = await this.publicationModel
-      .findById(id)
-      .populate('userId', 'name lastName username profileImage')
-      .populate('comments.user', 'name lastName username profileImage')
-      .populate('likes', 'name lastName')
-      .exec();
-
-    if (!publication) {
-      throw new NotFoundException('Publicación no encontrada');
-    }
-
-    const alreadyLiked = publication.likes.some(
-      (l: any) => (l._id ?? l).toString() === userId,
-    );
-
-    if (!alreadyLiked) {
-      const userObjectId = new Types.ObjectId(userId);
-      publication.likes.push(userObjectId);
-      await publication.save();
-    }
-
-    return this._mapPublication(publication, userId);
-  }
-
-  async removeLike(id: string, userId: string) {
-    const publication = await this.publicationModel
-      .findById(id)
-      .populate('userId', 'name lastName username profileImage')
-      .populate('comments.user', 'name lastName username profileImage')
-      .populate('likes', 'name lastName')
-      .exec();
-
-    if (!publication) {
-      throw new NotFoundException('Publicación no encontrada');
-    }
-
-    const alreadyLiked = publication.likes.some(
-      (l: any) => (l._id ?? l).toString() === userId,
-    );
-
-    if (alreadyLiked) {
-      publication.likes = publication.likes.filter(
-        (l: any) => (l._id ?? l).toString() !== userId,
-      );
-      await publication.save();
-    }
-
-    return this._mapPublication(publication, userId);
-  }
-
-  async remove(id: string, userId: string) {
-    const publication = await this.publicationModel.findById(id).exec();
-    if (!publication) {
-      throw new NotFoundException('Publicación no encontrada');
-    }
+  public async remove(id: string, userId: string) {
+    const publication = await this._findPublication(id);
 
     const user = await this.userModel.findById(userId).exec();
     if (!user) {
@@ -186,5 +98,164 @@ export class PublicationsService {
     await publication.save();
 
     return { message: 'Publicación eliminada correctamente' };
+  }
+  // endregion Publicaciones
+
+  // region Likes
+
+  private async _toggleLike(id: string, userId: string, add: boolean) {
+    const publication = await this.publicationModel
+      .findById(id)
+      .populate('userId', 'name lastName username profileImage')
+      .populate('comments.user', 'name lastName username profileImage')
+      .populate('likes', 'name lastName')
+      .exec();
+
+    if (!publication) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    const alreadyLiked = publication.likes.some((l: any) => (l._id ?? l).toString() === userId);
+
+    if (add && !alreadyLiked) {
+      publication.likes.push(new Types.ObjectId(userId));
+      await publication.save();
+    } else if (!add && alreadyLiked) {
+      publication.likes = publication.likes.filter((l: any) => (l._id ?? l).toString() !== userId);
+      await publication.save();
+    }
+
+    return this._mapPublication(publication, userId);
+  }
+
+  async addLike(id: string, userId: string) {
+    return this._toggleLike(id, userId, true);
+  }
+
+  async removeLike(id: string, userId: string) {
+    return this._toggleLike(id, userId, false);
+  }
+  // endregion Likes
+
+  // region Comentarios
+  public async getComments(publicationId: string, page: number, limit: number) {
+    const publication = await this._findPublication(publicationId);
+
+    const total = publication.comments.length;
+    const sorted = [...publication.comments]
+      .sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .slice((page - 1) * limit, page * limit);
+
+    const commentIds = sorted.map((c: any) => c._id.toString());
+
+    await this._populatePublicationComments(publication);
+    const populated = publication.comments.filter((c: any) =>
+      commentIds.includes(c._id.toString()),
+    );
+
+    return {
+      comments: populated.map((c: any) => this._mapComment(c)),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  public async addComment(publicationId: string, dto: CreateCommentDto) {
+    const publication = await this._findPublication(publicationId);
+
+    publication.comments.push({
+      text: dto.text,
+      user: new Types.ObjectId(dto.userId),
+      createdAt: new Date(),
+      modified: false,
+    } as any);
+    await publication.save();
+
+    await this._populatePublicationComments(publication);
+    const newComment = publication.comments[publication.comments.length - 1];
+
+    return this._mapComment(newComment);
+  }
+
+  public async editComment(publicationId: string, commentId: string, dto: UpdateCommentDto) {
+    const publication = await this._findPublication(publicationId);
+    const comment = this._findComment(publication, commentId);
+
+    if (comment.user.toString() !== dto.userId) {
+      throw new ForbiddenException('No tenés permiso para editar este comentario');
+    }
+
+    comment.text = dto.text;
+    comment.modified = true;
+    await publication.save();
+
+    await this._populatePublicationComments(publication);
+    const updated = publication.comments.find((c: any) => c._id.toString() === commentId);
+
+    return this._mapComment(updated);
+  }
+  // endregion Comentarios
+
+  private async _findPublication(id: string) {
+    const pub = await this.publicationModel.findById(id).exec();
+    if (!pub || pub._deleted) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+    return pub;
+  }
+
+  private _findComment(publication: any, commentId: string) {
+    const comment = publication.comments.find((c: any) => c._id.toString() === commentId);
+    if (!comment) {
+      throw new NotFoundException('Comentario no encontrado');
+    }
+    return comment;
+  }
+
+  private _mapComment(c: any) {
+    return {
+      id: c._id,
+      text: c.text,
+      user: {
+        name: c.user?.name ?? '',
+        lastName: c.user?.lastName ?? '',
+        username: c.user?.username ?? '',
+        profileImage: c.user?.profileImage ?? '',
+      },
+      createdAt: c.createdAt,
+      modified: c.modified,
+    };
+  }
+
+  private async _populatePublicationComments(pub: any) {
+    await pub.populate('comments.user', 'name lastName username profileImage');
+    return pub;
+  }
+
+  private _mapPublication(pub: any, currentUserId?: string) {
+    const userId = pub.userId?._id ?? pub.userId;
+    return {
+      id: pub._id,
+      title: pub.title,
+      description: pub.description,
+      imageUrl: pub.imageUrl,
+      userId: userId?.toString?.() ?? userId,
+      user: {
+        name: pub.userId?.name ?? '',
+        lastName: pub.userId?.lastName ?? '',
+        username: pub.userId?.username ?? '',
+        profileImage: pub.userId?.profileImage ?? '',
+      },
+      likes: pub.likes?.length ?? 0,
+      comments: (pub.comments ?? []).map((c: any) => this._mapComment(c)),
+      createdAt: pub.createdAt,
+      isLikedByCurrentUser:
+        pub.likes?.some((l: any) => {
+          const likeId = (l._id ?? l)?.toString?.() ?? l._id ?? l;
+          return currentUserId && likeId === currentUserId;
+        }) ?? false,
+    };
   }
 }
