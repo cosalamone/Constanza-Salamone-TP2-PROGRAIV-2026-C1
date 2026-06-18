@@ -30,6 +30,11 @@ export class PublicationsController {
     });
   }
 
+  @Get(':id')
+  findOne(@Param('id') id: string, @Query('currentUserId') currentUserId: string) {
+    return this.publicationsService.findOne(id, currentUserId);
+  }
+
   @Get(':id/comments')
   getComments(
     @Param('id') id: string,

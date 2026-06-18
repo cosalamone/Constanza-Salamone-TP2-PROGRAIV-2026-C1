@@ -101,6 +101,21 @@ export class PublicationsService {
   }
   // endregion Publicaciones
 
+  public async findOne(id: string, currentUserId?: string) {
+    const publication = await this.publicationModel
+      .findById(id)
+      .populate('userId', 'name lastName username profileImage')
+      .populate('comments.user', 'name lastName username profileImage')
+      .populate('likes', 'name lastName')
+      .exec();
+
+    if (!publication || publication._deleted) {
+      throw new NotFoundException('Publicación no encontrada');
+    }
+
+    return this._mapPublication(publication, currentUserId);
+  }
+
   // region Likes
 
   private async _toggleLike(id: string, userId: string, add: boolean) {

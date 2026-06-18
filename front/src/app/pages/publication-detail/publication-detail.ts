@@ -124,18 +124,10 @@ export class PublicationDetail implements OnInit {
   public loadPublication(id: string): void {
     this.loading.set(true);
     this._publicationService
-      .getPublications({
-        page: 1,
-        limit: 1,
-        sort: 'date',
-        currentUserId: this._authService.currentUser()?.id,
-      })
+      .getPublicationById(id, this._authService.currentUser()?.id)
       .subscribe({
-        next: (response) => {
-          const pub = response.publications.find((p: any) => p.id === id);
-          if (pub) {
-            this.publication.set(pub as IPublication);
-          }
+        next: (pub) => {
+          this.publication.set(pub as IPublication);
           this.loading.set(false);
         },
         error: () => this.loading.set(false),
