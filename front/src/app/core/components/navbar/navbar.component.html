@@ -15,28 +15,32 @@
         <span class="logo-text">RedSocial</span>
       }
     </a>
-    <app-button [buttonModel]="collapseButtonModel()"></app-button>
-    <app-button [buttonModel]="closeButtonModel()"></app-button>
   </div>
 
   <nav class="sidebar-nav">
     @for (item of menuItems(); track item.label) {
-      @if (item.route) {
-        <a
-          class="sidebar-item"
-          [routerLink]="item.route"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: false }"
-          (click)="onNavItemClick()">
-          <i [class]="item.icon"></i>
-          @if (!collapsed()) {
-            <span class="sidebar-item-label">{{ item.label }}</span>
-          }
-        </a>
-      } @else {
-        <app-button [buttonModel]="getSidebarItemButtonModel(item)"></app-button>
-      }
+      <a
+        class="sidebar-item"
+        [class.active]="item.active?.()"
+        [routerLink]="item.route ?? null"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        (click)="onItemClick(item)">
+        <i [class]="item.icon"></i>
+        @if (!collapsed()) {
+          <span class="sidebar-item-label">{{ item.label }}</span>
+        }
+      </a>
     }
+    <div class="sidebar-nav-spacer"></div>
+    <a
+      class="sidebar-item"
+      (click)="toggleCollapse.emit()">
+      <i [class]="collapsed() ? 'pi pi-angle-right' : 'pi pi-angle-left'"></i>
+      @if (!collapsed()) {
+        <span class="sidebar-item-label">Colapsar menú</span>
+      }
+    </a>
   </nav>
 
   @if (currentUser(); as user) {

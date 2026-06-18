@@ -16,19 +16,19 @@ export class QuickLoginComponent {
 
   public readonly users: QuickLoginUser[] = [
     {
-      title: 'usuario1',
-      username: 'usuario1',
-      password: 'hola123',
+      title: 'juan_perez',
+      username: 'juan_perez',
+      password: 'Hola123!',
     },
     {
-      title: 'usuario2',
-      username: 'usuario2',
-      password: 'hola123',
+      title: 'connie_sol',
+      username: 'connie_sol',
+      password: 'Hola123!',
     },
     {
-      title: 'usuario3',
-      username: 'usuario3',
-      password: 'hola123',
+      title: 'nueva_usuaria',
+      username: 'nueva_usuaria',
+      password: 'Hola123!',
     },
   ];
 }

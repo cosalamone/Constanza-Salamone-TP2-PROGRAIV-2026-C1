@@ -50,4 +50,14 @@ export class PublicationServices extends ApiBaseService {
       params: queryParams,
     });
   }
+
+  public getPublicationById(id: string, currentUserId?: string): Observable<any> {
+    const queryParams: any = {};
+    if (currentUserId) {
+      queryParams.currentUserId = currentUserId;
+    }
+    return this._httpClient.get(`${this._apiUrl}/publications/${id}`, {
+      params: queryParams,
+    });
+  }
 }

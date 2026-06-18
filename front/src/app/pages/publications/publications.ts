@@ -1,4 +1,5 @@
 import { Component, inject, signal, computed, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { PublicationServices } from '../../services/publication/publication.services';
 import { IPublication } from '../../core/interfaces/publication.interface';
@@ -31,6 +32,7 @@ export class Publications implements OnInit {
   private readonly _publicationService = inject(PublicationServices);
   private readonly _confirmationService = inject(ConfirmationService);
   private readonly _toastService = inject(ToastService);
+  private readonly _router = inject(Router);
 
   public readonly sortMode = signal<'date' | 'likes'>('date');
   public readonly currentPage = signal<number>(0);
@@ -144,5 +146,9 @@ export class Publications implements OnInit {
         },
         error: (err) => console.error('Error loading publications', err),
       });
+  }
+
+  public onCommentClick(publicationId: string): void {
+    this._router.navigate(['/publicaciones', publicationId]);
   }
 }
