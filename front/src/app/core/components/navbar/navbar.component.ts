@@ -30,24 +30,25 @@ export class NavbarComponent {
   public readonly menuItems = computed<SidebarItem[]>(() => {
     const user = this.currentUser();
 
-    const items: SidebarItem[] = [
-      { label: 'Inicio', icon: 'pi pi-images', route: '/publicaciones' },
-      { label: 'Mi perfil', icon: 'pi pi-id-card', route: '/mi-perfil' },
-    ];
+    const items: SidebarItem[] = [];
 
     if (user) {
-      items.push({
-        label: 'Cerrar sesión',
-        icon: 'pi pi-sign-out',
-        action: () => {
-          this._authService.logout();
-          this._router.navigate(['/login']);
+      items.push(
+        { label: 'Inicio', icon: 'pi pi-images', route: '/publicaciones' },
+        { label: 'Mi perfil', icon: 'pi pi-id-card', route: '/mi-perfil' },
+        {
+          label: 'Cerrar sesión',
+          icon: 'pi pi-sign-out',
+          action: () => {
+            this._authService.logout();
+            this._router.navigate(['/login']);
+          },
         },
-      });
+      );
     } else {
       items.push(
-        { label: 'Registrarse', icon: 'pi pi-user-plus', route: '/registro' },
         { label: 'Login', icon: 'pi pi-sign-in', route: '/login' },
+        { label: 'Registrarse', icon: 'pi pi-user-plus', route: '/registro' },
       );
     }
 
