@@ -115,7 +115,7 @@ section {
 }
 
 .form-panel {
-  width: min(560px, 96%);
+  width: min(900px, 96%);
   background: rgba(14, 22, 22, 0.64); /* con transparencia*/
   border-radius: 12px;
   padding: 1.75rem;
