@@ -16,7 +16,8 @@
         [showComments]="false"
         [canDelete]="pub.userId === currentUserId()"
         (likeToggled)="onLikeToggle($event)"
-        (deleteRequested)="onDelete($event)" />
+        (deleteRequested)="onDelete($event)"
+        (commentClicked)="onCommentClick($event)" />
     }
   </div>
 

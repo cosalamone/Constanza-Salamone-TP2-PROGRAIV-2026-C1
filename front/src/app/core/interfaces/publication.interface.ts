@@ -10,6 +10,7 @@ export interface IComment {
   text: string;
   user: IPublicationUser;
   createdAt: Date;
+  modified: boolean;
 }
 
 export interface IPublication {

@@ -20,6 +20,7 @@ export class PublicationCardComponent {
 
   public readonly likeToggled = output<string>();
   public readonly deleteRequested = output<string>();
+  public readonly commentClicked = output<string>();
 
   public readonly timeAgo = computed(() => {
     const pub = this.publication();
@@ -68,7 +69,7 @@ export class PublicationCardComponent {
       new ButtonCommonModel({
         iconName: 'pi pi-comment',
         label: `${this.publication().comments.length}`,
-        action: () => {},
+        action: () => this.onComment(),
         style: 'outlined',
         permission: of({ allowed: true }),
         styleClass: 'pub-card__action-btn',
@@ -81,5 +82,9 @@ export class PublicationCardComponent {
 
   public onDelete(): void {
     this.deleteRequested.emit(this.publication().id);
+  }
+
+  public onComment(): void {
+    this.commentClicked.emit(this.publication().id);
   }
 }
