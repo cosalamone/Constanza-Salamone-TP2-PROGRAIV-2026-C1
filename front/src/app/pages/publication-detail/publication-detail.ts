@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { PublicationServices } from '../../services/publication/publication.services';
 import { CommentService } from '../../services/comment/comment.service';
 import { IPublication, IComment } from '../../core/interfaces/publication.interface';
+import { PublicationCardComponent } from '../../core/components/publication-card/publication-card';
 import { PhotoSlotComponent } from '../../core/components/photo-slot/photo-slot.component';
 import { ButtonBaseComponent } from '../../core/components/buttons/button-base/button-base.component';
 import { ButtonCommonModel } from '../../core/models/buttons/button-common.model';
@@ -15,7 +16,7 @@ import { of } from 'rxjs';
 @Component({
   selector: 'app-publication-detail',
   standalone: true,
-  imports: [FormsModule, PhotoSlotComponent, ButtonBaseComponent],
+  imports: [FormsModule, PublicationCardComponent, PhotoSlotComponent, ButtonBaseComponent],
   templateUrl: './publication-detail.html',
   styleUrls: ['./publication-detail.css'],
 })
@@ -39,37 +40,6 @@ export class PublicationDetail implements OnInit {
 
   public readonly currentUserId = computed(() => this._authService.currentUser()?.id);
 
-  public readonly timeAgo = computed(() => {
-    const pub = this.publication();
-    if (!pub) return '';
-    const now = new Date();
-    const created = new Date(pub.createdAt);
-    const diffMs = now.getTime() - created.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMins / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffMins < 1) return 'ahora mismo';
-    if (diffMins < 60) return `hace ${diffMins} min`;
-    if (diffHours < 24) return `hace ${diffHours} hora${diffHours > 1 ? 's' : ''}`;
-    if (diffDays < 7) return `hace ${diffDays} día${diffDays > 1 ? 's' : ''}`;
-    return `hace ${Math.floor(diffDays / 7)} sem`;
-  });
-
-  public readonly likeButtonModel = computed(
-    () =>
-      new ButtonCommonModel({
-        iconName: this.publication()?.isLikedByCurrentUser ? 'pi pi-heart-fill' : 'pi pi-heart',
-        label: `${this.publication()?.likes ?? 0}`,
-        action: () => this.onLikeToggle(),
-        permission: of({ allowed: true }),
-        style: 'outlined',
-        styleClass: this.publication()?.isLikedByCurrentUser
-          ? 'pub-detail__action-btn liked'
-          : 'pub-detail__action-btn',
-      }),
-  );
-
   public readonly backButtonModel = computed(
     () =>
       new ButtonIconModel({
@@ -91,6 +61,51 @@ export class PublicationDetail implements OnInit {
         permission: of({ allowed: true }),
         style: 'filled',
         styleClass: 'pub-detail__send-btn',
+      }),
+  );
+
+  public readonly editSaveButtonModel = computed(
+    () =>
+      new ButtonIconModel({
+        iconName: 'pi pi-check',
+        action: () => this.onSaveEdit(this.editingCommentId() ?? ''),
+        permission: of({ allowed: true }),
+        style: 'icon-outlined',
+        styleClass: 'pub-detail__edit-save-btn',
+      }),
+  );
+
+  public readonly editCancelButtonModel = computed(
+    () =>
+      new ButtonIconModel({
+        iconName: 'pi pi-times',
+        action: () => this.onCancelEdit(),
+        permission: of({ allowed: true }),
+        style: 'icon-outlined',
+        styleClass: 'pub-detail__edit-cancel-btn',
+      }),
+  );
+
+  public getEditCommentButtonModel(comment: IComment): ButtonIconModel {
+    return new ButtonIconModel({
+      iconName: 'pi pi-pencil',
+      action: () => this.onStartEdit(comment),
+      permission: of({ allowed: true }),
+      style: 'icon-outlined',
+      styleClass: 'pub-detail__comment-edit-btn',
+    });
+  }
+
+  public readonly loadMoreButtonModel = computed(
+    () =>
+      new ButtonCommonModel({
+        iconName: this.commentsLoading() ? 'pi pi-spin pi-spinner' : '',
+        label: this.commentsLoading() ? 'Cargando...' : 'Cargar más comentarios',
+        action: () => this.onLoadMoreComments(),
+        permission: of({ allowed: true }),
+        style: 'outlined',
+        disabledSignal: this.commentsLoading,
+        styleClass: 'pub-detail__load-more-btn',
       }),
   );
 
@@ -129,7 +144,7 @@ export class PublicationDetail implements OnInit {
 
   public loadComments(publicationId: string, page: number): void {
     this.commentsLoading.set(true);
-    this._commentService.getComments(publicationId, page, 5).subscribe({
+    this._commentService.getComments(publicationId, page, 3).subscribe({
       next: (response) => {
         if (page === 1) {
           this.comments.set(response.comments as IComment[]);
@@ -161,11 +176,23 @@ export class PublicationDetail implements OnInit {
 
     request$.subscribe({
       next: (updatedPub: any) => {
-        this.publication.update((p) =>
-          p ? { ...p, ...updatedPub } : p,
-        );
+        this.publication.update((p) => (p ? { ...p, ...updatedPub } : p));
       },
       error: () => this.loadPublication(pub.id),
+    });
+  }
+
+  public onDelete(): void {
+    const pub = this.publication();
+    const userId = this._authService.currentUser()?.id;
+    if (!pub || !userId) return;
+
+    this._publicationService.deletePublication(pub.id, userId).subscribe({
+      next: () => {
+        this._toastService.showSuccess('Publicación eliminada');
+        this.goBack();
+      },
+      error: () => this._toastService.showError('Error al eliminar'),
     });
   }
 

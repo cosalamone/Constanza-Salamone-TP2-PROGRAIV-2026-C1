@@ -3,43 +3,17 @@
 
   @if (loading()) {
     <div class="pub-detail__loading">
-      <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--color-primary);"></i>
+      <i
+        class="pi pi-spin pi-spinner"
+        style="font-size: 2rem; color: var(--color-primary)"></i>
     </div>
   } @else if (publication(); as pub) {
-    <article class="pub-detail__card">
-      <header class="pub-detail__header">
-        <div class="pub-detail__user">
-          <app-photo-slot
-            [imageUrl]="pub.user.profileImage ?? null"
-            [name]="pub.user.name"
-            [lastName]="pub.user.lastName"
-            size="sm"
-            shape="circle"
-            placeholderIcon="pi pi-user"
-            placeholderText=""
-            [readonly]="true" />
-          <div class="pub-detail__user-info">
-            <span class="pub-detail__username">{{ pub.user.name }} {{ pub.user.lastName }}</span>
-            <span class="pub-detail__time">{{ timeAgo() }}</span>
-          </div>
-        </div>
-      </header>
-
-      @if (pub.imageUrl) {
-        <div class="pub-detail__image">
-          <img [src]="pub.imageUrl" [alt]="pub.title" />
-        </div>
-      }
-
-      <div class="pub-detail__content">
-        <h2 class="pub-detail__title">{{ pub.title }}</h2>
-        <p class="pub-detail__description">{{ pub.description }}</p>
-      </div>
-
-      <footer class="pub-detail__footer">
-        <app-button [buttonModel]="likeButtonModel()"></app-button>
-      </footer>
-    </article>
+    <app-publication-card
+      [publication]="pub"
+      [showComments]="false"
+      [canDelete]="pub.userId === currentUserId()"
+      (likeToggled)="onLikeToggle()"
+      (deleteRequested)="onDelete()" />
 
     <div class="pub-detail__comments-section">
       <h3 class="pub-detail__comments-title">Comentarios ({{ pub.comments.length }})</h3>
@@ -69,8 +43,12 @@
               [readonly]="true" />
             <div class="pub-detail__comment-body">
               <div class="pub-detail__comment-header">
-                <span class="pub-detail__comment-author">{{ comment.user.name }} {{ comment.user.lastName }}</span>
-                <span class="pub-detail__comment-time">{{ commentTimeAgo(comment.createdAt) }}</span>
+                <span class="pub-detail__comment-author"
+                  >{{ comment.user.name }} {{ comment.user.lastName }}</span
+                >
+                <span class="pub-detail__comment-time">{{
+                  commentTimeAgo(comment.createdAt)
+                }}</span>
                 @if (comment.modified) {
                   <span class="pub-detail__comment-edited">(editado)</span>
                 }
@@ -85,21 +63,17 @@
                     (keyup.enter)="onSaveEdit(comment.id)"
                     (keyup.escape)="onCancelEdit()" />
                   <div class="pub-detail__comment-edit-actions">
-                    <button class="pub-detail__edit-save" (click)="onSaveEdit(comment.id)">
-                      <i class="pi pi-check"></i>
-                    </button>
-                    <button class="pub-detail__edit-cancel" (click)="onCancelEdit()">
-                      <i class="pi pi-times"></i>
-                    </button>
+                    <app-button [buttonModel]="editSaveButtonModel()"></app-button>
+                    <app-button [buttonModel]="editCancelButtonModel()"></app-button>
                   </div>
                 </div>
               } @else {
-                <span class="pub-detail__comment-text">{{ comment.text }}</span>
-                @if (canEditComment(comment)) {
-                  <button class="pub-detail__comment-edit-btn" (click)="onStartEdit(comment)">
-                    <i class="pi pi-pencil"></i>
-                  </button>
-                }
+                <div class="pub-detail__comment-text-row">
+                  <span class="pub-detail__comment-text">{{ comment.text }}</span>
+                  @if (canEditComment(comment)) {
+                    <app-button [buttonModel]="getEditCommentButtonModel(comment)"></app-button>
+                  }
+                </div>
               }
             </div>
           </div>
@@ -107,16 +81,9 @@
       </div>
 
       @if (currentCommentPage() < totalCommentPages()) {
-        <button
-          class="pub-detail__load-more"
-          (click)="onLoadMoreComments()"
-          [disabled]="commentsLoading()">
-          @if (commentsLoading()) {
-            <i class="pi pi-spin pi-spinner"></i> Cargando...
-          } @else {
-            Cargar más comentarios
-          }
-        </button>
+        <div class="pub-detail__load-more-wrapper">
+          <app-button [buttonModel]="loadMoreButtonModel()"></app-button>
+        </div>
       }
     </div>
   }
