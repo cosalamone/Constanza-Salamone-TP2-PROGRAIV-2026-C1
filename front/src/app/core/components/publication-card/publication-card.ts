@@ -1,4 +1,4 @@
-import { Component, input, output, computed } from '@angular/core';
+import { Component, input, output, computed, signal } from '@angular/core';
 import { IPublication } from '../../interfaces/publication.interface';
 import { PhotoSlotComponent } from '../photo-slot/photo-slot.component';
 import { ButtonBaseComponent } from '../buttons/button-base/button-base.component';
@@ -17,6 +17,7 @@ export class PublicationCardComponent {
   public readonly publication = input.required<IPublication>();
   public readonly showComments = input<boolean>(false);
   public readonly canDelete = input<boolean>(false);
+  public readonly likeLoading = input<boolean>(false);
 
   public readonly likeToggled = output<string>();
   public readonly deleteRequested = output<string>();
@@ -61,6 +62,7 @@ export class PublicationCardComponent {
         styleClass: this.publication().isLikedByCurrentUser
           ? 'pub-card__action-btn liked'
           : 'pub-card__action-btn',
+        disabledSignal: signal(this.likeLoading()),
       }),
   );
 

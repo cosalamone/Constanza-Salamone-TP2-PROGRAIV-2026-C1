@@ -15,6 +15,7 @@
         [publication]="pub"
         [showComments]="false"
         [canDelete]="pub.userId === currentUserId()"
+        [likeLoading]="loadingLikes().has(pub.id)"
         (likeToggled)="onLikeToggle($event)"
         (deleteRequested)="onDelete($event)"
         (commentClicked)="onCommentClick($event)" />

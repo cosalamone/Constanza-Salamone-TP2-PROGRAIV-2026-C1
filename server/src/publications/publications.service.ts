@@ -146,8 +146,12 @@ export class PublicationsService {
   // region Likes
 
   private async _toggleLike(id: string, userId: string, add: boolean) {
+    const update = add
+      ? { $addToSet: { likes: new Types.ObjectId(userId) } }
+      : { $pull: { likes: new Types.ObjectId(userId) } };
+
     const publication = await this.publicationModel
-      .findById(id)
+      .findByIdAndUpdate(id, update, { new: true })
       .populate('userId', 'name lastName username profileImage')
       .populate('comments.user', 'name lastName username profileImage')
       .populate('likes', 'name lastName')
@@ -155,16 +159,6 @@ export class PublicationsService {
 
     if (!publication) {
       throw new NotFoundException('Publicación no encontrada');
-    }
-
-    const alreadyLiked = publication.likes.some((l: any) => (l._id ?? l).toString() === userId);
-
-    if (add && !alreadyLiked) {
-      publication.likes.push(new Types.ObjectId(userId));
-      await publication.save();
-    } else if (!add && alreadyLiked) {
-      publication.likes = publication.likes.filter((l: any) => (l._id ?? l).toString() !== userId);
-      await publication.save();
     }
 
     return this._mapPublication(publication, userId);

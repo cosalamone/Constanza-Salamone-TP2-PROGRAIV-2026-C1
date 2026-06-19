@@ -40,6 +40,7 @@ export class Publications implements OnInit {
 
   public readonly publications = signal<IPublication[]>([]);
   public readonly totalRecords = signal<number>(0);
+  public readonly loadingLikes = signal<Set<string>>(new Set());
 
   public readonly currentUserId = computed(() => this._authService.currentUser()?.id);
 
@@ -94,6 +95,8 @@ export class Publications implements OnInit {
     const publication = this.publications().find((p) => p.id === publicationId);
     if (!publication) return;
 
+    this.loadingLikes.update((set) => new Set(set).add(publicationId));
+
     const request$ = publication.isLikedByCurrentUser
       ? this._publicationService.removeLike(publicationId, userId)
       : this._publicationService.addLike(publicationId, userId);
@@ -107,6 +110,13 @@ export class Publications implements OnInit {
       error: (err) => {
         console.error('Error toggling like', err);
         this.loadPublications();
+      },
+      complete: () => {
+        this.loadingLikes.update((set) => {
+          const next = new Set(set);
+          next.delete(publicationId);
+          return next;
+        });
       },
     });
   }
