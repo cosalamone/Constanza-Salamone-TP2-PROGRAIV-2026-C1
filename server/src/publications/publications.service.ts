@@ -152,16 +152,19 @@ export class PublicationsService {
 
     const publication = await this.publicationModel
       .findByIdAndUpdate(id, update, { new: true })
-      .populate('userId', 'name lastName username profileImage')
-      .populate('comments.user', 'name lastName username profileImage')
-      .populate('likes', 'name lastName')
+      .select('likes')
       .exec();
 
     if (!publication) {
       throw new NotFoundException('Publicación no encontrada');
     }
 
-    return this._mapPublication(publication, userId);
+    return {
+      id: publication._id,
+      likes: publication.likes?.length ?? 0,
+      isLikedByCurrentUser:
+        publication.likes?.some((l: any) => l.toString() === userId) ?? false,
+    };
   }
 
   async addLike(id: string, userId: string) {

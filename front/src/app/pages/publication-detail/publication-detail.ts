@@ -162,7 +162,20 @@ export class PublicationDetail implements OnInit {
     const userId = this._authService.currentUser()?.id;
     if (!pub || !userId) return;
 
-    const request$ = pub.isLikedByCurrentUser
+    const previousLikes = pub.likes;
+    const previousIsLiked = pub.isLikedByCurrentUser;
+
+    this.publication.update((p) =>
+      p
+        ? {
+            ...p,
+            likes: p.isLikedByCurrentUser ? p.likes - 1 : p.likes + 1,
+            isLikedByCurrentUser: !p.isLikedByCurrentUser,
+          }
+        : p,
+    );
+
+    const request$ = previousIsLiked
       ? this._publicationService.removeLike(pub.id, userId)
       : this._publicationService.addLike(pub.id, userId);
 
@@ -170,7 +183,11 @@ export class PublicationDetail implements OnInit {
       next: (updatedPub: any) => {
         this.publication.update((p) => (p ? { ...p, ...updatedPub } : p));
       },
-      error: () => this.loadPublication(pub.id),
+      error: () => {
+        this.publication.update((p) =>
+          p ? { ...p, likes: previousLikes, isLikedByCurrentUser: previousIsLiked } : p,
+        );
+      },
     });
   }
 
