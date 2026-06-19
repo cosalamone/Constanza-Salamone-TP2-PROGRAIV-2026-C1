@@ -76,6 +76,7 @@ export class Publications implements OnInit {
   }
 
   public onSortChange(mode: 'date' | 'likes'): void {
+    if (this.sortMode() === mode) return;
     this.sortMode.set(mode);
     this.currentPage.set(0);
     this.loadPublications();

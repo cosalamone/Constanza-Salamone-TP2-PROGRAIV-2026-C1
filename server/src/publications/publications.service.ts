@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, SortOrder, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { Publication } from './entities/publication.schema';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -54,21 +54,48 @@ export class PublicationsService {
       filter.userId = userId;
     }
 
-    const sortOption: Record<string, SortOrder> =
-      sort === 'likes' ? { 'likes.length': -1 } : { createdAt: -1 };
+    let publications: any[];
+    let total: number;
 
-    const [publications, total] = await Promise.all([
-      this.publicationModel
-        .find(filter)
-        .sort(sortOption)
-        .skip((page - 1) * limit)
-        .limit(limit)
+    if (sort === 'likes') {
+      const sortedIds = await this.publicationModel
+        .aggregate([
+          { $match: filter },
+          { $addFields: { likesCount: { $size: '$likes' } } },
+          { $sort: { likesCount: -1 } },
+          { $skip: (page - 1) * limit },
+          { $limit: limit },
+          { $project: { _id: 1 } },
+        ])
+        .exec();
+
+      const ids = sortedIds.map((d: any) => d._id);
+
+      publications = await this.publicationModel
+        .find({ _id: { $in: ids } })
         .populate('userId', 'name lastName username profileImage')
         .populate('comments.user', 'name lastName username profileImage')
         .populate('likes', 'name lastName')
-        .exec(),
-      this.publicationModel.countDocuments(filter).exec(),
-    ]);
+        .exec();
+
+      const idOrder = new Map(ids.map((id: any, idx: number) => [id.toString(), idx]));
+      publications.sort((a: any, b: any) => (idOrder.get(a._id.toString()) ?? 0) - (idOrder.get(b._id.toString()) ?? 0));
+
+      total = await this.publicationModel.countDocuments(filter).exec();
+    } else {
+      [publications, total] = await Promise.all([
+        this.publicationModel
+          .find(filter)
+          .sort({ createdAt: -1 })
+          .skip((page - 1) * limit)
+          .limit(limit)
+          .populate('userId', 'name lastName username profileImage')
+          .populate('comments.user', 'name lastName username profileImage')
+          .populate('likes', 'name lastName')
+          .exec(),
+        this.publicationModel.countDocuments(filter).exec(),
+      ]);
+    }
 
     return {
       publications: publications.map((pub) => this._mapPublication(pub, currentUserId)),
