@@ -5,8 +5,4 @@ export class UpdateCommentDto {
   @IsNotEmpty()
   @MinLength(1)
   text!: string;
-
-  @IsString()
-  @IsNotEmpty()
-  userId!: string;
 }

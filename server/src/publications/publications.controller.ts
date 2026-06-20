@@ -1,16 +1,20 @@
-import { Controller, Get, Post, Put, Delete, Body, Query, Param } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Query, Param, UseGuards, Request } from '@nestjs/common';
 import { PublicationsService } from './publications.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import type { Request as ExpressRequest } from 'express';
 
 @Controller('publications')
 export class PublicationsController {
   constructor(private readonly publicationsService: PublicationsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createPublicationDto: CreatePublicationDto, @Body('userId') userId: string) {
-    return this.publicationsService.create(createPublicationDto, userId);
+  create(@Body() createPublicationDto: CreatePublicationDto, @Request() req: ExpressRequest) {
+    const user = req.user!;
+    return this.publicationsService.create(createPublicationDto, user.sub);
   }
 
   @Get()
@@ -48,32 +52,43 @@ export class PublicationsController {
     );
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(':id/comments')
-  addComment(@Param('id') id: string, @Body() dto: CreateCommentDto) {
-    return this.publicationsService.addComment(id, dto);
+  addComment(@Param('id') id: string, @Body() dto: CreateCommentDto, @Request() req: ExpressRequest) {
+    const user = req.user!;
+    return this.publicationsService.addComment(id, dto, user.sub);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id/comments/:commentId')
   editComment(
     @Param('id') id: string,
     @Param('commentId') commentId: string,
     @Body() dto: UpdateCommentDto,
+    @Request() req: ExpressRequest,
   ) {
-    return this.publicationsService.editComment(id, commentId, dto);
+    const user = req.user!;
+    return this.publicationsService.editComment(id, commentId, dto, user.sub);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(':id/like')
-  addLike(@Param('id') id: string, @Body('userId') userId: string) {
-    return this.publicationsService.addLike(id, userId);
+  addLike(@Param('id') id: string, @Request() req: ExpressRequest) {
+    const user = req.user!;
+    return this.publicationsService.addLike(id, user.sub);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id/like')
-  removeLike(@Param('id') id: string, @Query('userId') userId: string) {
-    return this.publicationsService.removeLike(id, userId);
+  removeLike(@Param('id') id: string, @Request() req: ExpressRequest) {
+    const user = req.user!;
+    return this.publicationsService.removeLike(id, user.sub);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string, @Query('userId') userId: string) {
-    return this.publicationsService.remove(id, userId);
+  remove(@Param('id') id: string, @Request() req: ExpressRequest) {
+    const user = req.user!;
+    return this.publicationsService.remove(id, user.sub);
   }
 }

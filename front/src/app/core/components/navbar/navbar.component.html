@@ -49,7 +49,7 @@
         class="sidebar-user"
         [class.justify-center]="collapsed()">
         <app-photo-slot
-          [imageUrl]="user.profileImage ?? null"
+          [imageUrl]="user.profileImage || null"
           [name]="user.name"
           [lastName]="user.lastName"
           size="md"
