@@ -13,6 +13,7 @@ export interface User {
   profileImage?: string;
   description?: string;
   birthDate?: Date;
+  disabled?: boolean;
 }
 
 interface AuthResponse {

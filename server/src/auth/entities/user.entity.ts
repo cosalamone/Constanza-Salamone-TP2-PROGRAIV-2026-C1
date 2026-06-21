@@ -25,6 +25,9 @@ export class User {
 
   @Prop({ required: true, default: 'usuario' })
   role!: string;
+
+  @Prop({ required: true, default: false })
+  disabled!: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

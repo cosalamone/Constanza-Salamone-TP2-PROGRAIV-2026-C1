@@ -77,6 +77,10 @@ export class AuthService {
       throw new UnauthorizedException('Credenciales inválidas.');
     }
 
+    if (user.disabled) {
+      throw new UnauthorizedException('Usuario deshabilitado. Contacte al administrador.');
+    }
+
     const { password: _, ...userWithoutPassword } = user.toObject();
     const access_token = this._generateToken(userWithoutPassword);
 

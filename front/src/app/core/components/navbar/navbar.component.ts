@@ -39,16 +39,24 @@ export class NavbarComponent {
       items.push(
         { label: 'Inicio', icon: 'pi pi-images', route: '/publicaciones' },
         { label: 'Mi perfil', icon: 'pi pi-id-card', route: '/mi-perfil' },
-        {
-          label: 'Cerrar sesión',
-          icon: 'pi pi-sign-out',
-          action: () => {
-            this.sessionTimer.stopTimer();
-            this._authService.logout();
-            this._router.navigate(['/login']);
-          },
-        },
       );
+
+      if (user.role === 'admin') {
+        items.push(
+          { label: 'Gestionar usuarios', icon: 'pi pi-users', route: '/admin/usuarios' },
+          { label: 'Estadísticas', icon: 'pi pi-chart-bar', route: '/admin/estadisticas' },
+        );
+      }
+
+      items.push({
+        label: 'Cerrar sesión',
+        icon: 'pi pi-sign-out',
+        action: () => {
+          this.sessionTimer.stopTimer();
+          this._authService.logout();
+          this._router.navigate(['/login']);
+        },
+      });
     } else {
       items.push(
         { label: 'Login', icon: 'pi pi-sign-in', route: '/login' },
