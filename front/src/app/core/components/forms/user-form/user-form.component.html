@@ -1,0 +1,81 @@
+<form [formGroup]="form" class="user-form" (ngSubmit)="onSubmit()">
+  @if (showPhoto()) {
+    <div class="user-form__photo">
+      <app-photo-slot
+        [imageUrl]="profileImage()"
+        placeholderText="Subir foto de perfil"
+        size="xl"
+        shape="circle"
+        (photoClick)="photoClick.emit()" />
+    </div>
+  }
+
+  <div class="user-form__row">
+    <div class="user-form__control">
+      <label class="user-form__label" for="uf-name">Nombre</label>
+      <input id="uf-name" type="text" formControlName="name" class="form-input" placeholder="Nombre" />
+      <app-form-error-message [control]="form.get('name')" label="Nombre" />
+    </div>
+    <div class="user-form__control">
+      <label class="user-form__label" for="uf-lastName">Apellido</label>
+      <input id="uf-lastName" type="text" formControlName="lastName" class="form-input" placeholder="Apellido" />
+      <app-form-error-message [control]="form.get('lastName')" label="Apellido" />
+    </div>
+  </div>
+
+  <div class="user-form__row">
+    <div class="user-form__control">
+      <label class="user-form__label" for="uf-username">Nombre de usuario</label>
+      <input id="uf-username" type="text" formControlName="username" class="form-input" placeholder="Nombre de usuario" />
+      <app-form-error-message [control]="form.get('username')" label="Nombre de usuario" />
+    </div>
+    <div class="user-form__control">
+      <label class="user-form__label" for="uf-birthDate">Fecha de nacimiento</label>
+      <p-datepicker
+        inputId="uf-birthDate"
+        inputClass="form-input"
+        formControlName="birthDate"
+        dateFormat="dd/mm/yy"
+        placeholder="dd/mm/yyyy"
+        pInputMask="99/99/9999" />
+      <app-form-error-message [control]="form.get('birthDate')" label="Fecha de nacimiento" />
+    </div>
+  </div>
+
+  <div class="user-form__row">
+    <div class="user-form__control">
+      <label class="user-form__label" for="uf-password">Contraseña</label>
+      <input id="uf-password" type="password" formControlName="password" class="form-input" placeholder="Mín. 8 caracteres, 1 mayúscula, 1 número" />
+      <app-form-error-message [control]="form.get('password')" label="Contraseña" />
+    </div>
+    @if (showConfirmPassword()) {
+      <div class="user-form__control">
+        <label class="user-form__label" for="uf-confirmPassword">Repetir contraseña</label>
+        <input id="uf-confirmPassword" type="password" formControlName="confirmPassword" class="form-input" placeholder="Repetir contraseña" />
+        <app-form-error-message [control]="form.get('confirmPassword')" label="Repetir contraseña" />
+      </div>
+    }
+    @if (showRole()) {
+      <div class="user-form__control">
+        <label class="user-form__label">Rol</label>
+        <div class="user-form__radio-group">
+          <label class="user-form__radio">
+            <input type="radio" formControlName="role" value="usuario" />
+            <span>Usuario</span>
+          </label>
+          <label class="user-form__radio">
+            <input type="radio" formControlName="role" value="admin" />
+            <span>Administrador</span>
+          </label>
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (showDescription()) {
+    <div class="user-form__control">
+      <label class="user-form__label" for="uf-description">Descripción (opcional)</label>
+      <textarea id="uf-description" formControlName="description" class="form-input" rows="2" placeholder="Descripción breve"></textarea>
+    </div>
+  }
+</form>

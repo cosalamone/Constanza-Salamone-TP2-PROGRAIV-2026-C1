@@ -4,7 +4,14 @@ import { CreatePublicationDto } from './dto/create-publication.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import type { Request as ExpressRequest } from 'express';
+
+interface JwtRequest {
+  user: {
+    sub: string;
+    username: string;
+    role: string;
+  };
+}
 
 @Controller('publications')
 export class PublicationsController {
@@ -12,8 +19,8 @@ export class PublicationsController {
 
   @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createPublicationDto: CreatePublicationDto, @Request() req: ExpressRequest) {
-    const user = req.user!;
+  create(@Body() createPublicationDto: CreatePublicationDto, @Request() req: JwtRequest) {
+    const user = req.user;
     return this.publicationsService.create(createPublicationDto, user.sub);
   }
 
@@ -24,9 +31,9 @@ export class PublicationsController {
     @Query('limit') limit: string,
     @Query('sort') sort: string,
     @Query('userId') userId: string,
-    @Request() req: ExpressRequest,
+    @Request() req: JwtRequest,
   ) {
-    const user = req.user!;
+    const user = req.user;
     return this.publicationsService.findAll({
       page: Number(page) || 1,
       limit: Number(limit) || 10,
@@ -38,8 +45,8 @@ export class PublicationsController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string, @Request() req: ExpressRequest) {
-    const user = req.user!;
+  findOne(@Param('id') id: string, @Request() req: JwtRequest) {
+    const user = req.user;
     return this.publicationsService.findOne(id, user.sub);
   }
 
@@ -58,8 +65,8 @@ export class PublicationsController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/comments')
-  addComment(@Param('id') id: string, @Body() dto: CreateCommentDto, @Request() req: ExpressRequest) {
-    const user = req.user!;
+  addComment(@Param('id') id: string, @Body() dto: CreateCommentDto, @Request() req: JwtRequest) {
+    const user = req.user;
     return this.publicationsService.addComment(id, dto, user.sub);
   }
 
@@ -69,30 +76,30 @@ export class PublicationsController {
     @Param('id') id: string,
     @Param('commentId') commentId: string,
     @Body() dto: UpdateCommentDto,
-    @Request() req: ExpressRequest,
+    @Request() req: JwtRequest,
   ) {
-    const user = req.user!;
+    const user = req.user;
     return this.publicationsService.editComment(id, commentId, dto, user.sub);
   }
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/like')
-  addLike(@Param('id') id: string, @Request() req: ExpressRequest) {
-    const user = req.user!;
+  addLike(@Param('id') id: string, @Request() req: JwtRequest) {
+    const user = req.user;
     return this.publicationsService.addLike(id, user.sub);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id/like')
-  removeLike(@Param('id') id: string, @Request() req: ExpressRequest) {
-    const user = req.user!;
+  removeLike(@Param('id') id: string, @Request() req: JwtRequest) {
+    const user = req.user;
     return this.publicationsService.removeLike(id, user.sub);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string, @Request() req: ExpressRequest) {
-    const user = req.user!;
+  remove(@Param('id') id: string, @Request() req: JwtRequest) {
+    const user = req.user;
     return this.publicationsService.remove(id, user.sub);
   }
 }

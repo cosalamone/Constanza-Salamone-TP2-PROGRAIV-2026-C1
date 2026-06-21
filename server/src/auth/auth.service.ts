@@ -69,16 +69,25 @@ export class AuthService {
     const user = await this._userModel.findOne({ username });
 
     if (!user) {
-      throw new UnauthorizedException('Credenciales inválidas.');
+      throw new UnauthorizedException({
+        message: 'Credenciales inválidas.',
+        errorCode: 'INVALID_CREDENTIALS',
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Credenciales inválidas.');
+      throw new UnauthorizedException({
+        message: 'Credenciales inválidas.',
+        errorCode: 'INVALID_CREDENTIALS',
+      });
     }
 
     if (user.disabled) {
-      throw new UnauthorizedException('Usuario deshabilitado. Contacte al administrador.');
+      throw new UnauthorizedException({
+        message: 'Usuario deshabilitado. Contacte al administrador.',
+        errorCode: 'USER_DISABLED',
+      });
     }
 
     const { password: _, ...userWithoutPassword } = user.toObject();
