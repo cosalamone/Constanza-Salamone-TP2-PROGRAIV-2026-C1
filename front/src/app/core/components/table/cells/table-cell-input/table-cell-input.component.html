@@ -1,0 +1,7 @@
+<input
+  class="table-base__input"
+  [type]="type()"
+  [value]="value()"
+  [placeholder]="placeholder()"
+  [class]="className()"
+  (input)="valueChange.emit($any($event.target).value)" />
