@@ -14,7 +14,7 @@
       <app-publication-card
         [publication]="pub"
         [showComments]="false"
-        [canDelete]="pub.userId === currentUserId()"
+        [canDelete]="pub.userId === currentUserId() || isAdmin()"
         (likeToggled)="onLikeToggle($event)"
         (deleteRequested)="onDelete($event)"
         (commentClicked)="onCommentClick($event)" />

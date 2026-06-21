@@ -39,6 +39,7 @@ export class PublicationDetail implements OnInit {
   public readonly commentsLoading = signal<boolean>(false);
 
   public readonly currentUserId = computed(() => this._authService.currentUser()?.id);
+  public readonly isAdmin = computed(() => this._authService.currentUser()?.role === 'admin');
 
   public readonly backButtonModel = computed(
     () =>

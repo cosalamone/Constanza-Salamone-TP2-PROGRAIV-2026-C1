@@ -39,6 +39,7 @@ export class SessionTimerService {
       rejectLabel: 'Cerrar sesión',
       acceptButtonStyleClass: 'p-button-success',
       accept: () => {
+        this._confirmationService.close();
         this._authService.refreshToken().subscribe({
           next: () => {
             this.startTimer();
@@ -49,6 +50,7 @@ export class SessionTimerService {
         });
       },
       reject: () => {
+        this._confirmationService.close();
         this._handleLogout();
       },
     });

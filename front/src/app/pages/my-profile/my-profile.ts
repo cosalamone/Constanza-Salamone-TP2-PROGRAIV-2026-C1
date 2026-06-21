@@ -35,6 +35,7 @@ export class MyProfile implements OnInit {
   public readonly publications = computed(() => this._publications().slice(0, 3));
 
   public readonly currentUserId = computed(() => this._authService.currentUser()?.id);
+  public readonly isAdmin = computed(() => this._authService.currentUser()?.role === 'admin');
 
   public ngOnInit(): void {
     this._loadUserPublications();

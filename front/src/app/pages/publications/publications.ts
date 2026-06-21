@@ -41,6 +41,7 @@ export class Publications implements OnInit {
   public readonly totalRecords = signal<number>(0);
 
   public readonly currentUserId = computed(() => this._authService.currentUser()?.id);
+  public readonly isAdmin = computed(() => this._authService.currentUser()?.role === 'admin');
 
   public readonly sortDateButtonModel = computed(
     () =>
@@ -137,10 +138,14 @@ export class Publications implements OnInit {
       accept: () => {
         this._publicationService.deletePublication(publicationId).subscribe({
           next: () => {
+            this._confirmationService.close();
             this._toastService.showSuccess('Publicación eliminada exitosamente');
             this.loadPublications();
           },
-          error: (err) => console.error('Error deleting publication', err),
+          error: (err) => {
+            this._confirmationService.close();
+            console.error('Error deleting publication', err);
+          },
         });
       },
     });
