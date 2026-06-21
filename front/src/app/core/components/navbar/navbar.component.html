@@ -32,6 +32,15 @@
         }
       </a>
     }
+    @if (sessionTimer.showTimer() && !collapsed()) {
+      <div class="sidebar-timer">
+        <app-timer
+          [initialTime]="600"
+          [resetTimer]="sessionTimer.resetSignal()"
+          [paused]="!sessionTimer.isRunning()"
+          (timeIsFinished)="onTimerFinished()" />
+      </div>
+    }
     <div class="sidebar-nav-spacer"></div>
     <a
       class="sidebar-item"

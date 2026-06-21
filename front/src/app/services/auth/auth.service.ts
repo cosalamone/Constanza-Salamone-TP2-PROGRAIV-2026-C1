@@ -49,6 +49,10 @@ export class AuthService extends ApiBaseService {
     return localStorage.getItem(this._tokenKey);
   }
 
+  public authorize(): Observable<{ user: User }> {
+    return this._httpClient.post<{ user: User }>(`${this._apiUrl}/auth/authorize`, {});
+  }
+
   public register(registerData: IRegister): Observable<AuthResponse> {
     return this._httpClient.post<AuthResponse>(`${this._apiUrl}/auth/register`, registerData).pipe(
       tap((res) => {
@@ -70,6 +74,14 @@ export class AuthService extends ApiBaseService {
     localStorage.setItem(this._storageKey, JSON.stringify(user));
     localStorage.setItem(this._tokenKey, res.access_token);
     this.currentUser.set(user);
+  }
+
+  public refreshToken(): Observable<{ access_token: string }> {
+    return this._httpClient.post<{ access_token: string }>(`${this._apiUrl}/auth/refresh`, {}).pipe(
+      tap((res) => {
+        localStorage.setItem(this._tokenKey, res.access_token);
+      }),
+    );
   }
 
   public logout(): void {

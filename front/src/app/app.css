@@ -4,6 +4,18 @@
   overflow: hidden;
 }
 
+.app-loading {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  background-color: var(--color-bg);
+  z-index: 9999;
+}
+
 .app-main {
   flex: 1;
   overflow-y: auto;

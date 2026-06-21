@@ -723,4 +723,17 @@ section {
 .p-confirm-dialog-mask {
   background: rgba(0, 0, 0, 0.6) !important;
 }
+
+.pub-confirm-dialog .p-button.p-confirm-dialog-accept,
+.pub-confirm-dialog .p-button.p-button-success {
+  background: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: #000 !important;
+}
+
+.pub-confirm-dialog .p-button.p-confirm-dialog-accept:hover,
+.pub-confirm-dialog .p-button.p-button-success:hover {
+  background: #36c4ae !important;
+  border-color: #36c4ae !important;
+}
 /* #endregion Confirm Dialog */

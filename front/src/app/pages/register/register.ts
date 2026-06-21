@@ -18,6 +18,7 @@ import {
 import { RegisterButtonModel } from '../../core/models/buttons/register-button.model';
 import { IAuthError, IRegister } from '../../core/interfaces/auth-interfaces/auth.interfaces';
 import { AuthService } from '../../services/auth/auth.service';
+import { SessionTimerService } from '../../core/services/session-timer.service';
 import { DatePickerModule } from 'primeng/datepicker';
 
 @Component({
@@ -35,6 +36,7 @@ import { DatePickerModule } from 'primeng/datepicker';
 export class Register {
   private readonly _formBuilder = inject(FormBuilder);
   private readonly _authService = inject(AuthService);
+  private readonly _sessionTimer = inject(SessionTimerService);
   private readonly _toast = inject(ToastService);
   private readonly _navigateToService = inject(NavigateToService);
   private readonly _photoCaptureService = inject(PhotoCaptureService);
@@ -99,7 +101,7 @@ export class Register {
 
     this._authService.register(value).subscribe({
       next: (res) => {
-        console.log('res', res);
+        this._sessionTimer.startTimer();
         this._toast.showSuccess(REGISTER_MESSAGES.SUCCESS);
         this._navigateToService.navigateToLogin();
       },

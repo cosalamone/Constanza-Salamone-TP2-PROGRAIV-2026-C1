@@ -23,7 +23,6 @@ import { ToastService } from '../../core/services/toast.service';
     ButtonBaseComponent,
     ConfirmDialog,
   ],
-  providers: [ConfirmationService],
   templateUrl: './publications.html',
   styleUrls: ['./publications.css'],
 })

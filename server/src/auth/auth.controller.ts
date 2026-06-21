@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -19,7 +19,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('authorize')
+  @Post('authorize')
   // Solo voy a poder acceder si tengo token válido
   async authorize(@Request() req: ExpressRequest) {
     const user = req.user!;
