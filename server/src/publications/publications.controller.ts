@@ -17,26 +17,30 @@ export class PublicationsController {
     return this.publicationsService.create(createPublicationDto, user.sub);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
   findAll(
     @Query('page') page: string,
     @Query('limit') limit: string,
     @Query('sort') sort: string,
     @Query('userId') userId: string,
-    @Query('currentUserId') currentUserId: string,
+    @Request() req: ExpressRequest,
   ) {
+    const user = req.user!;
     return this.publicationsService.findAll({
       page: Number(page) || 1,
       limit: Number(limit) || 10,
       sort: sort || 'date',
       userId,
-      currentUserId,
+      currentUserId: user.sub,
     });
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string, @Query('currentUserId') currentUserId: string) {
-    return this.publicationsService.findOne(id, currentUserId);
+  findOne(@Param('id') id: string, @Request() req: ExpressRequest) {
+    const user = req.user!;
+    return this.publicationsService.findOne(id, user.sub);
   }
 
   @Get(':id/comments')
