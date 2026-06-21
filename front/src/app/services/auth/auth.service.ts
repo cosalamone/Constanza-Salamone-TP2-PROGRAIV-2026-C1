@@ -54,11 +54,7 @@ export class AuthService extends ApiBaseService {
   }
 
   public register(registerData: IRegister): Observable<AuthResponse> {
-    return this._httpClient.post<AuthResponse>(`${this._apiUrl}/auth/register`, registerData).pipe(
-      tap((res) => {
-        this._saveSession(res);
-      }),
-    );
+    return this._httpClient.post<AuthResponse>(`${this._apiUrl}/auth/register`, registerData);
   }
 
   public login(loginData: ILogin): Observable<AuthResponse> {

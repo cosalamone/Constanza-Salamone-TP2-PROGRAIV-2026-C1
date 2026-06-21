@@ -6,6 +6,7 @@ import { CreatePublicationDto } from './dto/create-publication.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CLOUDINARY } from '../cloudinary/cloudinary.provider';
+import { UserType } from 'src/enums/userType.enum';
 
 @Injectable()
 export class PublicationsService {
@@ -79,7 +80,10 @@ export class PublicationsService {
         .exec();
 
       const idOrder = new Map(ids.map((id: any, idx: number) => [id.toString(), idx]));
-      publications.sort((a: any, b: any) => (idOrder.get(a._id.toString()) ?? 0) - (idOrder.get(b._id.toString()) ?? 0));
+      publications.sort(
+        (a: any, b: any) =>
+          (idOrder.get(a._id.toString()) ?? 0) - (idOrder.get(b._id.toString()) ?? 0),
+      );
 
       total = await this.publicationModel.countDocuments(filter).exec();
     } else {
@@ -115,7 +119,7 @@ export class PublicationsService {
     }
 
     const isAuthor = publication.userId.toString() === userId;
-    const isAdmin = user.role === 'admin';
+    const isAdmin = user.role === UserType.ADMIN;
 
     if (!isAuthor && !isAdmin) {
       throw new ForbiddenException('No tenés permiso para eliminar esta publicación');
@@ -162,8 +166,7 @@ export class PublicationsService {
     return {
       id: publication._id,
       likes: publication.likes?.length ?? 0,
-      isLikedByCurrentUser:
-        publication.likes?.some((l: any) => l.toString() === userId) ?? false,
+      isLikedByCurrentUser: publication.likes?.some((l: any) => l.toString() === userId) ?? false,
     };
   }
 

@@ -4,7 +4,7 @@ export interface IRegister {
   username: string;
   birthDate: Date;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
   description?: string;
   profileImage?: string;
   role?: string;
