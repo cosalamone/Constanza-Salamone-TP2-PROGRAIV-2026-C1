@@ -1,0 +1,121 @@
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.user-form__photo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.user-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.user-form__control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.user-form__label {
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+}
+
+.user-form__control .form-input {
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.user-form__control .form-input:focus {
+  box-shadow: 0 0 0 4px rgba(64, 224, 198, 0.08);
+  border-color: var(--color-primary);
+}
+
+.user-form__control ::ng-deep .p-datepicker {
+  width: 100%;
+}
+
+.user-form__control ::ng-deep .p-datepicker .p-datepicker-input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.user-form__control ::ng-deep .p-datepicker .p-datepicker-input:focus {
+  box-shadow: 0 0 0 4px rgba(64, 224, 198, 0.08);
+  border-color: var(--color-primary);
+}
+
+.user-form__radio-group {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.user-form__radio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+.user-form__radio input[type='radio'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 2px solid var(--color-text-light);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.user-form__radio input[type='radio']:hover {
+  box-shadow: 0 0 0 4px rgba(64, 224, 198, 0.08);
+}
+
+.user-form__radio input[type='radio']:checked {
+  border-color: var(--color-primary);
+}
+
+.user-form__radio input[type='radio']:checked::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .user-form__row {
+    grid-template-columns: 1fr;
+  }
+}

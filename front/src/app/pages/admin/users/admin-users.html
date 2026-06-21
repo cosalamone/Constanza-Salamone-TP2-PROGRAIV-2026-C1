@@ -1,0 +1,34 @@
+<section class="admin-users">
+  <header class="admin-users__header">
+    <h1 class="admin-users__title">Gestión de Usuarios</h1>
+    <app-button [buttonModel]="createUserButtonModel()"></app-button>
+  </header>
+
+  @if (showForm()) {
+    <div class="admin-users__form-panel">
+      <h2>Crear nuevo usuario</h2>
+      <app-user-form
+        [showRole]="true"
+        [showConfirmPassword]="true"
+        [showPhoto]="true"
+        [showDescription]="true"
+        (formSubmitted)="onFormSubmitted()"
+        (photoClick)="handlePhotoClick()">
+      </app-user-form>
+      <div class="admin-users__form-actions mt-2">
+        <app-button [buttonModel]="cancelButtonModel()"></app-button>
+        <app-button [buttonModel]="submitButtonModel()"></app-button>
+      </div>
+    </div>
+  }
+
+  <app-table-base
+    title="Usuarios"
+    recordsLabel="usuarios"
+    [columns]="columns"
+    [rows]="users()"
+    [paginator]="true"
+    [rowsPerPage]="10"
+    (cellAction)="onCellAction($event)">
+  </app-table-base>
+</section>

@@ -1,0 +1,101 @@
+<section class="grid gap-4">
+  <div class="flex justify-end gap-3">
+    <ng-content select="[table-toolbar]" />
+  </div>
+
+  <div class="table-base__surface">
+    <p-table
+      styleClass="table-base__p-table"
+      tableStyleClass="table-base__p-table-table"
+      [value]="data()"
+      [dataKey]="idProp() || undefined"
+      [paginator]="paginator()"
+      [lazy]="lazy()"
+      [rows]="rowsPerPage()"
+      [showCurrentPageReport]="true"
+      [currentPageReportTemplate]="paginatorCurrentPageReportTemplate()"
+      [totalRecords]="resolvedTotalRecords()"
+      [scrollable]="scrollable()"
+      [scrollHeight]="scrollHeight()"
+      [rowHover]="true"
+      (onLazyLoad)="emitQueryChange($event)">
+      <ng-template pTemplate="header">
+        <tr>
+          @for (column of columns(); track trackColumn($index, column)) {
+            <th [class]="headerClass(column)">
+              {{ column.header.label }}
+            </th>
+          }
+        </tr>
+      </ng-template>
+
+      <ng-template
+        pTemplate="body"
+        let-row>
+        <tr>
+          @for (column of columns(); track trackColumn($index, column)) {
+            <td
+              [attr.data-label]="column.header.label"
+              [class]="cellClass(column)">
+              @switch (column.cell.kind ?? 'text') {
+                @case ('badge') {
+                  <app-table-cell-badge
+                    [value]="resolveCellValue(row, column)"
+                    [fallbackText]="column.cell.fallbackText ?? '-'"
+                    [className]="badgeClass(column, row)">
+                  </app-table-cell-badge>
+                }
+                @case ('action') {
+                  <app-table-cell-action
+                    [label]="column.cell.actionLabel ?? resolveCellValue(row, column)"
+                    [className]="actionClass(column, row)"
+                    (action)="emitCellAction(column, row)">
+                  </app-table-cell-action>
+                }
+                @case ('icon') {
+                  <app-table-cell-icon
+                    [className]="iconClass(column, row)"
+                    [title]="iconTitle(column, row)">
+                  </app-table-cell-icon>
+                }
+                @case ('input') {
+                  <app-table-cell-input
+                    [value]="resolveCellValue(row, column)"
+                    [type]="column.cell.inputType ?? 'text'"
+                    [placeholder]="column.cell.inputPlaceholder ?? ''"
+                    [className]="valueClass(column, row)"
+                    (valueChange)="emitCellValueChange(column, row, $event)">
+                  </app-table-cell-input>
+                }
+                @case ('dropdown') {
+                  <app-table-cell-dropdown
+                    [value]="resolveCellValue(row, column)"
+                    [options]="column.cell.selectOptions ?? []"
+                    [placeholder]="column.cell.selectPlaceholder ?? 'Seleccione'"
+                    [className]="valueClass(column, row)"
+                    (valueChange)="emitCellValueChange(column, row, $event)">
+                  </app-table-cell-dropdown>
+                }
+                @default {
+                  <app-table-cell-text
+                    [value]="resolveCellValue(row, column)"
+                    [fallbackText]="column.cell.fallbackText ?? '-'"
+                    [className]="valueClass(column, row)">
+                  </app-table-cell-text>
+                }
+              }
+            </td>
+          }
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr class="table-base__empty-row">
+          <td [attr.colspan]="columns().length">
+            {{ resolvedEmptyMessage() }}
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</section>

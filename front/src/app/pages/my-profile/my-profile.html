@@ -12,7 +12,7 @@
           <app-publication-card
             [publication]="pub"
             [showComments]="true"
-            [canDelete]="pub.userId === currentUserId()" />
+            [canDelete]="pub.userId === currentUserId() || isAdmin()" />
         } @empty {
           <p class="profile-page__empty">Aún no tenés publicaciones.</p>
         }

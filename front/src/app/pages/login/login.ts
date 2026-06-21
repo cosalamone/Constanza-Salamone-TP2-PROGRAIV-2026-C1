@@ -6,7 +6,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../services/auth/auth.service';
 import { SessionTimerService } from '../../core/services/session-timer.service';
 import { ToastService } from '../../core/services/toast.service';
-import { LOGIN_MESSAGES } from './enums/login-messsages.enum';
+import { LOGIN_MESSAGES, LOGIN_ERROR_CODES } from './enums/login-messsages.enum';
 import { FormErrorMessageComponent } from '../../core/components/forms/form-error-message/form-error-message.component';
 import { passwordValidator } from '../../core/utils/form-validation';
 import { QuickLoginComponent } from './components/quick-login/quick-login.component';
@@ -77,8 +77,13 @@ export class Login {
         this._toast.showSuccess(LOGIN_MESSAGES.SUCCESS);
         this._navigateToService.navigateToHome();
       },
-      error: () => {
-        this._toast.showError(LOGIN_MESSAGES.INVALID_CREDENTIALS);
+      error: (err) => {
+        const errorCode = err.error?.errorCode;
+        if (errorCode === LOGIN_ERROR_CODES.USER_DISABLED) {
+          this._toast.showError(LOGIN_MESSAGES.INVALID_ACCESS_USER_DISABLED);
+        } else {
+          this._toast.showError(LOGIN_MESSAGES.INVALID_CREDENTIALS);
+        }
       },
     });
   }

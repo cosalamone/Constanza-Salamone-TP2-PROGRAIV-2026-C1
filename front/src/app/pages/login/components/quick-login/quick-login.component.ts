@@ -30,5 +30,10 @@ export class QuickLoginComponent {
       username: 'nueva_usuaria',
       password: 'Hola123!',
     },
+    {
+      title: 'soy_jose_admin',
+      username: 'soy_jose_admin',
+      password: 'Hola123!',
+    },
   ];
 }

@@ -2,7 +2,14 @@ import { Controller, Post, Body, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterAuthDto } from './dto/register-auth.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import type { Request as ExpressRequest } from 'express';
+
+interface JwtRequest {
+  user: {
+    sub: string;
+    username: string;
+    role: string;
+  };
+}
 
 @Controller('auth')
 export class AuthController {
@@ -20,17 +27,16 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('authorize')
-  // Solo voy a poder acceder si tengo token válido
-  async authorize(@Request() req: ExpressRequest) {
-    const user = req.user!;
+  async authorize(@Request() req: JwtRequest) {
+    const user = req.user;
     const validatedUser = await this.authService.validateToken(user.sub);
     return { user: validatedUser };
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('refresh')
-  async refresh(@Request() req: ExpressRequest) {
-    const user = req.user!;
+  async refresh(@Request() req: JwtRequest) {
+    const user = req.user;
     return this.authService.refreshToken(user.sub);
   }
 }

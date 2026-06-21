@@ -1,0 +1,10 @@
+<p-select
+  [ngModel]="value()"
+  [options]="dropdownOptions()"
+  optionLabel="label"
+  optionValue="value"
+  [placeholder]="placeholder()"
+  [styleClass]="dropdownStyleClass()"
+  panelStyleClass="table-base__dropdown-panel"
+  (ngModelChange)="valueChange.emit($event)">
+</p-select>
