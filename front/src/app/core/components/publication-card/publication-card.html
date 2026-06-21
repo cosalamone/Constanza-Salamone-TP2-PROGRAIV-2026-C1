@@ -2,7 +2,7 @@
   <header class="pub-card__header">
     <div class="pub-card__user">
       <app-photo-slot
-        [imageUrl]="publication().user.profileImage ?? null"
+        [imageUrl]="publication().user.profileImage || null"
         [name]="publication().user.name"
         [lastName]="publication().user.lastName"
         size="sm"
@@ -47,7 +47,7 @@
       @for (comment of publication().comments; track comment.id) {
         <div class="pub-card__comment">
           <app-photo-slot
-            [imageUrl]="comment.user.profileImage ?? null"
+            [imageUrl]="comment.user.profileImage || null"
             [name]="comment.user.name"
             [lastName]="comment.user.lastName"
             size="sm"

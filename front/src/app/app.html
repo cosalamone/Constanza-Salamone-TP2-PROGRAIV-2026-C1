@@ -1,17 +1,24 @@
-<div class="app-layout">
-  <app-navbar
-    [collapsed]="sidebarCollapsed()"
-    (toggleCollapse)="sidebarCollapsed.update((v) => !v)"
-    (navItemActivated)="sidebarCollapsed.set(true)" />
-  <main class="app-main">
-    <router-outlet />
-  </main>
-</div>
+@if (loading()) {
+  <div class="app-loading">
+    <app-spinner size="large" text="Cargando..." />
+  </div>
+} @else {
+  <div class="app-layout">
+    <app-navbar
+      [collapsed]="sidebarCollapsed()"
+      (toggleCollapse)="sidebarCollapsed.update((v) => !v)"
+      (navItemActivated)="sidebarCollapsed.set(true)" />
+    <main class="app-main">
+      <router-outlet />
+    </main>
+  </div>
 
-@if (!sidebarCollapsed()) {
-  <div
-    class="sidebar-backdrop"
-    (click)="sidebarCollapsed.set(true)"></div>
+  @if (!sidebarCollapsed()) {
+    <div
+      class="sidebar-backdrop"
+      (click)="sidebarCollapsed.set(true)"></div>
+  }
 }
 
 <app-toast />
+<p-confirm-dialog styleClass="pub-confirm-dialog" />

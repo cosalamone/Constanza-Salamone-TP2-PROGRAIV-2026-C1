@@ -12,20 +12,16 @@ export class PublicationServices extends ApiBaseService {
     return this._httpClient.post(`${this._apiUrl}/publications`, publicationRequest);
   }
 
-  public deletePublication(id: string, userId: string): Observable<any> {
-    return this._httpClient.delete(`${this._apiUrl}/publications/${id}`, {
-      params: { userId },
-    });
+  public deletePublication(id: string): Observable<any> {
+    return this._httpClient.delete(`${this._apiUrl}/publications/${id}`);
   }
 
-  public addLike(id: string, userId: string): Observable<any> {
-    return this._httpClient.post(`${this._apiUrl}/publications/${id}/like`, { userId });
+  public addLike(id: string): Observable<any> {
+    return this._httpClient.post(`${this._apiUrl}/publications/${id}/like`, {});
   }
 
-  public removeLike(id: string, userId: string): Observable<any> {
-    return this._httpClient.delete(`${this._apiUrl}/publications/${id}/like`, {
-      params: { userId },
-    });
+  public removeLike(id: string): Observable<any> {
+    return this._httpClient.delete(`${this._apiUrl}/publications/${id}/like`);
   }
 
   public getPublications(params: {
@@ -33,7 +29,6 @@ export class PublicationServices extends ApiBaseService {
     limit: number;
     sort: string;
     userId?: string;
-    currentUserId?: string;
   }): Observable<PublicationResponse> {
     const queryParams: any = {
       page: params.page,
@@ -43,21 +38,12 @@ export class PublicationServices extends ApiBaseService {
     if (params.userId) {
       queryParams.userId = params.userId;
     }
-    if (params.currentUserId) {
-      queryParams.currentUserId = params.currentUserId;
-    }
     return this._httpClient.get<PublicationResponse>(`${this._apiUrl}/publications`, {
       params: queryParams,
     });
   }
 
-  public getPublicationById(id: string, currentUserId?: string): Observable<any> {
-    const queryParams: any = {};
-    if (currentUserId) {
-      queryParams.currentUserId = currentUserId;
-    }
-    return this._httpClient.get(`${this._apiUrl}/publications/${id}`, {
-      params: queryParams,
-    });
+  public getPublicationById(id: string): Observable<any> {
+    return this._httpClient.get(`${this._apiUrl}/publications/${id}`);
   }
 }

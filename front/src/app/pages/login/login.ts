@@ -4,6 +4,7 @@ import { LoginButtonModel } from '../../core/models/buttons/login-button.model';
 import { map, of, startWith } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '../../services/auth/auth.service';
+import { SessionTimerService } from '../../core/services/session-timer.service';
 import { ToastService } from '../../core/services/toast.service';
 import { LOGIN_MESSAGES } from './enums/login-messsages.enum';
 import { FormErrorMessageComponent } from '../../core/components/forms/form-error-message/form-error-message.component';
@@ -27,6 +28,7 @@ import { ILogin } from '../../core/interfaces/auth-interfaces/auth.interfaces';
 export class Login {
   private readonly _formBuilder = inject(FormBuilder);
   private readonly _authService = inject(AuthService);
+  private readonly _sessionTimer = inject(SessionTimerService);
   private readonly _navigateToService = inject(NavigateToService);
   private readonly _toast = inject(ToastService);
 
@@ -71,6 +73,7 @@ export class Login {
   private generateLogin(value: ILogin): void {
     this._authService.login(value).subscribe({
       next: () => {
+        this._sessionTimer.startTimer();
         this._toast.showSuccess(LOGIN_MESSAGES.SUCCESS);
         this._navigateToService.navigateToHome();
       },

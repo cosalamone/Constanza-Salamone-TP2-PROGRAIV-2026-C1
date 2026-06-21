@@ -92,13 +92,11 @@ export class CreatePostFormComponent {
   public onSubmit(): void {
     if (this.form.invalid || !this.user()) return;
 
-    const userId = this.user()!.id;
     this._publicationService
       .createPublication({
         title: this.form.value.title ?? '',
         description: this.form.value.description ?? '',
         imageUrl: this.imagePreview() ?? undefined,
-        userId,
       })
       .subscribe(() => {
         this.form.reset();

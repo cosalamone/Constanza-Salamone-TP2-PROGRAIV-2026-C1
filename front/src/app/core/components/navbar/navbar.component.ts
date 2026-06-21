@@ -1,7 +1,9 @@
 import { Component, computed, inject, input, output } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../services/auth/auth.service';
+import { SessionTimerService } from '../../services/session-timer.service';
 import { PhotoSlotComponent } from '../photo-slot/photo-slot.component';
+import { TimerComponent } from '../timer/timer.component';
 
 interface SidebarItem {
   label: string;
@@ -13,13 +15,14 @@ interface SidebarItem {
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink, RouterLinkActive, PhotoSlotComponent],
+  imports: [RouterLink, RouterLinkActive, PhotoSlotComponent, TimerComponent],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
   private readonly _authService = inject(AuthService);
   private readonly _router = inject(Router);
+  readonly sessionTimer = inject(SessionTimerService);
 
   public readonly collapsed = input(false);
   public readonly toggleCollapse = output<void>();
@@ -40,6 +43,7 @@ export class NavbarComponent {
           label: 'Cerrar sesión',
           icon: 'pi pi-sign-out',
           action: () => {
+            this.sessionTimer.stopTimer();
             this._authService.logout();
             this._router.navigate(['/login']);
           },
@@ -70,5 +74,9 @@ export class NavbarComponent {
     if (window.innerWidth <= 768 && !this.collapsed()) {
       this.toggleCollapse.emit();
     }
+  }
+
+  public onTimerFinished(): void {
+    this.sessionTimer.onTimerFinished();
   }
 }

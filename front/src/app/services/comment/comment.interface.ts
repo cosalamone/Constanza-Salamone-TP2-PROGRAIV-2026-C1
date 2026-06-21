@@ -1,6 +1,5 @@
 export interface CommentRequest {
   text: string;
-  userId: string;
 }
 
 export interface CommentResponse {

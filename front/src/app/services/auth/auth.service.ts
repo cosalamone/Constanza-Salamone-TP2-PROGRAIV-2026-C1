@@ -15,11 +15,17 @@ export interface User {
   birthDate?: Date;
 }
 
+interface AuthResponse {
+  user: any;
+  access_token: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService extends ApiBaseService {
   private readonly _storageKey = 'tp2_current_user';
+  private readonly _tokenKey = 'tp2_access_token';
 
   public readonly currentUser = signal<User | null>(this._getStoredUser());
 
@@ -39,22 +45,48 @@ export class AuthService extends ApiBaseService {
     return null;
   }
 
-  public register(registerData: IRegister): Observable<any> {
-    return this._httpClient.post(`${this._apiUrl}/auth/register`, registerData);
+  public getToken(): string | null {
+    return localStorage.getItem(this._tokenKey);
   }
 
-  public login(loginData: ILogin): Observable<User> {
-    return this._httpClient.post<User>(`${this._apiUrl}/auth/login`, loginData).pipe(
-      tap((raw: any) => {
-        const user: User = { ...raw, id: raw._id };
-        localStorage.setItem(this._storageKey, JSON.stringify(user));
-        this.currentUser.set(user);
+  public authorize(): Observable<{ user: User }> {
+    return this._httpClient.post<{ user: User }>(`${this._apiUrl}/auth/authorize`, {});
+  }
+
+  public register(registerData: IRegister): Observable<AuthResponse> {
+    return this._httpClient.post<AuthResponse>(`${this._apiUrl}/auth/register`, registerData).pipe(
+      tap((res) => {
+        this._saveSession(res);
+      }),
+    );
+  }
+
+  public login(loginData: ILogin): Observable<AuthResponse> {
+    return this._httpClient.post<AuthResponse>(`${this._apiUrl}/auth/login`, loginData).pipe(
+      tap((res) => {
+        this._saveSession(res);
+      }),
+    );
+  }
+
+  private _saveSession(res: AuthResponse): void {
+    const user: User = { ...res.user, id: res.user._id };
+    localStorage.setItem(this._storageKey, JSON.stringify(user));
+    localStorage.setItem(this._tokenKey, res.access_token);
+    this.currentUser.set(user);
+  }
+
+  public refreshToken(): Observable<{ access_token: string }> {
+    return this._httpClient.post<{ access_token: string }>(`${this._apiUrl}/auth/refresh`, {}).pipe(
+      tap((res) => {
+        localStorage.setItem(this._tokenKey, res.access_token);
       }),
     );
   }
 
   public logout(): void {
     localStorage.removeItem(this._storageKey);
+    localStorage.removeItem(this._tokenKey);
     this.currentUser.set(null);
   }
 }

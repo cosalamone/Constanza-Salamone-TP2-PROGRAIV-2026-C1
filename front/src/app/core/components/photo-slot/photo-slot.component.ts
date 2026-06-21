@@ -18,10 +18,14 @@ export class PhotoSlotComponent {
   public readonly photoClick = output<void>();
 
   public readonly initials = computed(() => {
-    const first = this.name().charAt(0) || '';
-    const last = this.lastName().charAt(0) || '';
+    const name = this.name() ?? '';
+    const lastName = this.lastName() ?? '';
+    const first = name.charAt(0) || '';
+    const last = lastName.charAt(0) || '';
     return (first + last).toUpperCase();
   });
+
+  public readonly hasInitials = computed(() => this.initials().length > 0);
 
   public onClick(): void {
     if (this.readonly()) return;

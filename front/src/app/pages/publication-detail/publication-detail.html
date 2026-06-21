@@ -33,7 +33,7 @@
         @for (comment of comments(); track comment.id) {
           <div class="pub-detail__comment">
             <app-photo-slot
-              [imageUrl]="comment.user.profileImage ?? null"
+              [imageUrl]="comment.user.profileImage || null"
               [name]="comment.user.name"
               [lastName]="comment.user.lastName"
               size="sm"

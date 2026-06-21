@@ -1,7 +1,7 @@
 <section class="profile">
   <div class="profile__info">
     <app-photo-slot
-      [imageUrl]="user().profileImage ?? null"
+      [imageUrl]="user().profileImage || null"
       [name]="user().name"
       [lastName]="user().lastName"
       size="lg"

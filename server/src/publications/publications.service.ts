@@ -201,15 +201,15 @@ export class PublicationsService {
     };
   }
 
-  public async addComment(publicationId: string, dto: CreateCommentDto) {
+  public async addComment(publicationId: string, dto: CreateCommentDto, userId: string) {
     const publication = await this._findPublication(publicationId);
 
     publication.comments.push({
       text: dto.text,
-      user: new Types.ObjectId(dto.userId),
+      user: new Types.ObjectId(userId),
       createdAt: new Date(),
       modified: false,
-    } as any);
+    });
     await publication.save();
 
     await this._populatePublicationComments(publication);
@@ -218,11 +218,16 @@ export class PublicationsService {
     return this._mapComment(newComment);
   }
 
-  public async editComment(publicationId: string, commentId: string, dto: UpdateCommentDto) {
+  public async editComment(
+    publicationId: string,
+    commentId: string,
+    dto: UpdateCommentDto,
+    userId: string,
+  ) {
     const publication = await this._findPublication(publicationId);
     const comment = this._findComment(publication, commentId);
 
-    if (comment.user.toString() !== dto.userId) {
+    if (comment.user.toString() !== userId) {
       throw new ForbiddenException('No tenés permiso para editar este comentario');
     }
 

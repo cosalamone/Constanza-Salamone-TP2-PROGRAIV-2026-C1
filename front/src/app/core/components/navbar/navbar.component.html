@@ -32,6 +32,15 @@
         }
       </a>
     }
+    @if (sessionTimer.showTimer() && !collapsed()) {
+      <div class="sidebar-timer">
+        <app-timer
+          [initialTime]="600"
+          [resetTimer]="sessionTimer.resetSignal()"
+          [paused]="!sessionTimer.isRunning()"
+          (timeIsFinished)="onTimerFinished()" />
+      </div>
+    }
     <div class="sidebar-nav-spacer"></div>
     <a
       class="sidebar-item"
@@ -49,7 +58,7 @@
         class="sidebar-user"
         [class.justify-center]="collapsed()">
         <app-photo-slot
-          [imageUrl]="user.profileImage ?? null"
+          [imageUrl]="user.profileImage || null"
           [name]="user.name"
           [lastName]="user.lastName"
           size="md"

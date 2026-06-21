@@ -23,7 +23,6 @@ import { ToastService } from '../../core/services/toast.service';
     ButtonBaseComponent,
     ConfirmDialog,
   ],
-  providers: [ConfirmationService],
   templateUrl: './publications.html',
   styleUrls: ['./publications.css'],
 })
@@ -88,9 +87,6 @@ export class Publications implements OnInit {
   }
 
   public onLikeToggle(publicationId: string): void {
-    const userId = this._authService.currentUser()?.id;
-    if (!userId) return;
-
     const publication = this.publications().find((p) => p.id === publicationId);
     if (!publication) return;
 
@@ -110,8 +106,8 @@ export class Publications implements OnInit {
     );
 
     const request$ = previousIsLiked
-      ? this._publicationService.removeLike(publicationId, userId)
-      : this._publicationService.addLike(publicationId, userId);
+      ? this._publicationService.removeLike(publicationId)
+      : this._publicationService.addLike(publicationId);
 
     request$.subscribe({
       next: (updatedPub) => {
@@ -139,10 +135,7 @@ export class Publications implements OnInit {
       acceptLabel: 'Eliminar',
       rejectLabel: 'Cancelar',
       accept: () => {
-        const userId = this._authService.currentUser()?.id;
-        if (!userId) return;
-
-        this._publicationService.deletePublication(publicationId, userId).subscribe({
+        this._publicationService.deletePublication(publicationId).subscribe({
           next: () => {
             this._toastService.showSuccess('Publicación eliminada exitosamente');
             this.loadPublications();
@@ -159,7 +152,6 @@ export class Publications implements OnInit {
         page: this.currentPage() + 1,
         limit: this.publicationsPerPage,
         sort: this.sortMode(),
-        currentUserId: this._authService.currentUser()?.id,
       })
       .subscribe({
         next: (response) => {

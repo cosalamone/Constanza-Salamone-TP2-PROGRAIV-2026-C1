@@ -123,15 +123,13 @@ export class PublicationDetail implements OnInit {
 
   public loadPublication(id: string): void {
     this.loading.set(true);
-    this._publicationService
-      .getPublicationById(id, this._authService.currentUser()?.id)
-      .subscribe({
-        next: (pub) => {
-          this.publication.set(pub as IPublication);
-          this.loading.set(false);
-        },
-        error: () => this.loading.set(false),
-      });
+    this._publicationService.getPublicationById(id).subscribe({
+      next: (pub) => {
+        this.publication.set(pub as IPublication);
+        this.loading.set(false);
+      },
+      error: () => this.loading.set(false),
+    });
   }
 
   public loadComments(publicationId: string, page: number): void {
@@ -159,8 +157,7 @@ export class PublicationDetail implements OnInit {
 
   public onLikeToggle(): void {
     const pub = this.publication();
-    const userId = this._authService.currentUser()?.id;
-    if (!pub || !userId) return;
+    if (!pub) return;
 
     const previousLikes = pub.likes;
     const previousIsLiked = pub.isLikedByCurrentUser;
@@ -176,8 +173,8 @@ export class PublicationDetail implements OnInit {
     );
 
     const request$ = previousIsLiked
-      ? this._publicationService.removeLike(pub.id, userId)
-      : this._publicationService.addLike(pub.id, userId);
+      ? this._publicationService.removeLike(pub.id)
+      : this._publicationService.addLike(pub.id);
 
     request$.subscribe({
       next: (updatedPub: any) => {
@@ -193,10 +190,9 @@ export class PublicationDetail implements OnInit {
 
   public onDelete(): void {
     const pub = this.publication();
-    const userId = this._authService.currentUser()?.id;
-    if (!pub || !userId) return;
+    if (!pub) return;
 
-    this._publicationService.deletePublication(pub.id, userId).subscribe({
+    this._publicationService.deletePublication(pub.id).subscribe({
       next: () => {
         this._toastService.showSuccess('Publicación eliminada');
         this.goBack();
@@ -207,11 +203,10 @@ export class PublicationDetail implements OnInit {
 
   public onAddComment(): void {
     const pub = this.publication();
-    const userId = this._authService.currentUser()?.id;
     const text = this.commentText().trim();
-    if (!pub || !userId || !text) return;
+    if (!pub || !text) return;
 
-    this._commentService.addComment(pub.id, { text, userId }).subscribe({
+    this._commentService.addComment(pub.id, { text }).subscribe({
       next: (newComment) => {
         this.comments.update((prev) => [newComment as IComment, ...prev]);
         this.commentText.set('');
@@ -236,11 +231,10 @@ export class PublicationDetail implements OnInit {
 
   public onSaveEdit(commentId: string): void {
     const pub = this.publication();
-    const userId = this._authService.currentUser()?.id;
     const text = this.editingCommentText().trim();
-    if (!pub || !userId || !text) return;
+    if (!pub || !text) return;
 
-    this._commentService.editComment(pub.id, commentId, { text, userId }).subscribe({
+    this._commentService.editComment(pub.id, commentId, { text }).subscribe({
       next: (updatedComment) => {
         this.comments.update((prev) =>
           prev.map((c) => (c.id === commentId ? (updatedComment as IComment) : c)),

@@ -25,7 +25,11 @@
     }
   } @else {
     @if (readonly()) {
-      <span class="photo-slot__initials">{{ initials() }}</span>
+      @if (hasInitials()) {
+        <span class="photo-slot__initials">{{ initials() }}</span>
+      } @else {
+        <i class="pi pi-user photo-slot__fallback-icon"></i>
+      }
     } @else {
       <div class="photo-slot__placeholder">
         <i [class]="placeholderIcon()"></i>
