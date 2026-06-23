@@ -47,7 +47,7 @@
                   >{{ comment.user.name }} {{ comment.user.lastName }}</span
                 >
                 <span class="pub-detail__comment-time">{{
-                  commentTimeAgo(comment.createdAt)
+                  comment.createdAt | timeAgo
                 }}</span>
                 @if (comment.modified) {
                   <span class="pub-detail__comment-edited">(editado)</span>

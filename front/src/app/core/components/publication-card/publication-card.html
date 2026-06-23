@@ -14,7 +14,7 @@
         <span class="pub-card__username"
           >{{ publication().user.name }} {{ publication().user.lastName }}</span
         >
-        <span class="pub-card__time">{{ timeAgo() }}</span>
+        <span class="pub-card__time">{{ publication().createdAt | timeAgo }}</span>
       </div>
     </div>
     @if (canDelete()) {

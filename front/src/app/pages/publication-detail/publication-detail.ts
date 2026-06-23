@@ -11,12 +11,13 @@ import { ButtonBaseComponent } from '../../core/components/buttons/button-base/b
 import { ButtonCommonModel } from '../../core/models/buttons/button-common.model';
 import { ButtonIconModel } from '../../core/models/buttons/icons-buttons/button-icon.model';
 import { ToastService } from '../../core/services/toast.service';
+import { TimeAgoPipe } from '../../core/pipes/time-ago.pipe';
 import { of } from 'rxjs';
 
 @Component({
   selector: 'app-publication-detail',
   standalone: true,
-  imports: [FormsModule, PublicationCardComponent, PhotoSlotComponent, ButtonBaseComponent],
+  imports: [FormsModule, PublicationCardComponent, PhotoSlotComponent, ButtonBaseComponent, TimeAgoPipe],
   templateUrl: './publication-detail.html',
   styleUrls: ['./publication-detail.css'],
 })
@@ -250,20 +251,5 @@ export class PublicationDetail implements OnInit {
 
   public canEditComment(comment: IComment): boolean {
     return comment.user.username === this._authService.currentUser()?.username;
-  }
-
-  public commentTimeAgo(date: Date): string {
-    const now = new Date();
-    const created = new Date(date);
-    const diffMs = now.getTime() - created.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMins / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffMins < 1) return 'ahora mismo';
-    if (diffMins < 60) return `hace ${diffMins} min`;
-    if (diffHours < 24) return `hace ${diffHours}h`;
-    if (diffDays < 7) return `hace ${diffDays}d`;
-    return `hace ${Math.floor(diffDays / 7)}sem`;
   }
 }
