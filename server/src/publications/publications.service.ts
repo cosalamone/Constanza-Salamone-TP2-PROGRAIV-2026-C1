@@ -6,7 +6,7 @@ import { CreatePublicationDto } from './dto/create-publication.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { CLOUDINARY } from '../cloudinary/cloudinary.provider';
-import { UserType } from 'src/enums/userType.enum';
+import { UserType } from '../enums/userType.enum';
 
 @Injectable()
 export class PublicationsService {
