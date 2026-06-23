@@ -13,6 +13,7 @@ import { QuickLoginComponent } from './components/quick-login/quick-login.compon
 import { ButtonBaseComponent } from '../../core/components/buttons/button-base/button-base.component';
 import { NavigateToService } from '../../core/services/navigate/navigate-to.service';
 import { ILogin } from '../../core/interfaces/auth-interfaces/auth.interfaces';
+import { AutoFocusDirective } from '../../core/directives/auto-focus.directive';
 
 @Component({
   selector: 'app-login',
@@ -21,6 +22,7 @@ import { ILogin } from '../../core/interfaces/auth-interfaces/auth.interfaces';
     ButtonBaseComponent,
     FormErrorMessageComponent,
     QuickLoginComponent,
+    AutoFocusDirective,
   ],
   templateUrl: './login.html',
   styleUrls: ['./login.css'],

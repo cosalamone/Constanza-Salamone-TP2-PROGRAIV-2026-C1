@@ -13,7 +13,7 @@
   <div class="user-form__row">
     <div class="user-form__control">
       <label class="user-form__label" for="uf-name">Nombre</label>
-      <input id="uf-name" type="text" formControlName="name" class="form-input" placeholder="Nombre" />
+      <input id="uf-name" type="text" formControlName="name" class="form-input" placeholder="Nombre" appAutoFocus />
       <app-form-error-message [control]="form.get('name')" label="Nombre" />
     </div>
     <div class="user-form__control">
@@ -34,6 +34,7 @@
       <p-datepicker
         inputId="uf-birthDate"
         inputClass="form-input"
+        styleClass="form-datepicker"
         formControlName="birthDate"
         dateFormat="dd/mm/yy"
         placeholder="dd/mm/yyyy"

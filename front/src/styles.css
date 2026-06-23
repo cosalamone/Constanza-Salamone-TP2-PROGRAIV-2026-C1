@@ -184,6 +184,29 @@ section {
   border-color: var(--filled-primary-bg);
 }
 
+.form-datepicker {
+  width: 100%;
+}
+
+.form-datepicker .p-datepicker-input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.form-datepicker .p-datepicker-input:focus {
+  box-shadow: 0 0 0 4px rgba(64, 224, 198, 0.08);
+  border-color: var(--color-primary);
+}
+
 .form-help {
   color: var(--color-text-light);
   font-size: 0.75rem;
