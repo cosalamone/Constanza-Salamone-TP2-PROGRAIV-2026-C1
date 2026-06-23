@@ -53,15 +53,26 @@ export class StatisticsService {
 
   async commentsPerPeriod(from?: string, to?: string) {
     const match: any = { _deleted: false };
+    const dateFilter: any = {};
     if (from || to) {
-      match.createdAt = {};
-      if (from) match.createdAt.$gte = new Date(from);
-      if (to) match.createdAt.$lte = new Date(to);
+      if (from) dateFilter.$gte = new Date(from);
+      if (to) dateFilter.$lte = new Date(to);
     }
 
-    const result = await this.publicationModel.aggregate([
+    const pipeline: any[] = [
       { $match: match },
       { $unwind: '$comments' },
+    ];
+
+    if (from || to) {
+      pipeline.push({
+        $match: {
+          'comments.createdAt': dateFilter,
+        },
+      });
+    }
+
+    pipeline.push(
       {
         $group: {
           _id: {
@@ -78,31 +89,46 @@ export class StatisticsService {
           count: 1,
         },
       },
-    ]);
+    );
 
+    const result = await this.publicationModel.aggregate(pipeline);
     return result;
   }
 
   async commentsPerPublication(from?: string, to?: string) {
-    const match: any = { _deleted: false };
+    const match: any = { _deleted: false, 'comments.createdAt': { $exists: true } };
+    const dateFilter: any = {};
     if (from || to) {
-      match.createdAt = {};
-      if (from) match.createdAt.$gte = new Date(from);
-      if (to) match.createdAt.$lte = new Date(to);
+      if (from) dateFilter.$gte = new Date(from);
+      if (to) dateFilter.$lte = new Date(to);
     }
 
-    const result = await this.publicationModel.aggregate([
+    const pipeline: any[] = [
       { $match: match },
+      { $unwind: '$comments' },
+    ];
+
+    if (from || to) {
+      pipeline.push({
+        $match: {
+          'comments.createdAt': dateFilter,
+        },
+      });
+    }
+
+    pipeline.push(
       {
-        $project: {
-          title: 1,
-          commentsCount: { $size: '$comments' },
+        $group: {
+          _id: '$_id',
+          title: { $first: '$title' },
+          commentsCount: { $sum: 1 },
         },
       },
       { $sort: { commentsCount: -1 } },
       { $limit: 20 },
-    ]);
+    );
 
+    const result = await this.publicationModel.aggregate(pipeline);
     return result;
   }
 }
