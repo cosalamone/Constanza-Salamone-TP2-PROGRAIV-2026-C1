@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChartModule } from 'primeng/chart';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -25,8 +25,9 @@ export class AdminStatistics implements OnInit {
   private readonly _toastService = inject(ToastService);
 
   public readonly loading = signal<boolean>(false);
-  public readonly fromDate = signal<Date | null>(null);
-  public readonly toDate = signal<Date | null>(null);
+  public readonly dateRange = signal<[Date | null, Date | null] | null>(null);
+
+  public readonly hasFilter = computed(() => this.dateRange() !== null);
 
   public readonly barData = signal<any>(null);
   public readonly barOptions = signal<any>(null);
@@ -35,13 +36,14 @@ export class AdminStatistics implements OnInit {
   public readonly lineData = signal<any>(null);
   public readonly lineOptions = signal<any>(null);
 
-  public readonly filterButtonModel = signal(
-    new ButtonCommonModel({
-      label: 'Filtrar',
-      iconName: 'pi pi-search',
-      permission: of({ allowed: true }),
-      action: () => this.loadStatistics(),
-    }),
+  public readonly filterButtonModel = computed(
+    () =>
+      new ButtonCommonModel({
+        label: 'Filtrar',
+        iconName: 'pi pi-search',
+        permission: of({ allowed: true }),
+        action: () => this.loadStatistics(),
+      }),
   );
 
   public readonly clearButtonModel = signal(
@@ -116,8 +118,9 @@ export class AdminStatistics implements OnInit {
   public loadStatistics(): void {
     this.loading.set(true);
 
-    const from = this.fromDate()?.toISOString();
-    const to = this.toDate()?.toISOString();
+    const range = this.dateRange();
+    const from = range?.[0]?.toISOString();
+    const to = range?.[1]?.toISOString();
 
     this._statisticsService.getPublicationsPerUser(from, to).subscribe({
       next: (data) => this._buildBarChart(data),
@@ -141,9 +144,12 @@ export class AdminStatistics implements OnInit {
     });
   }
 
+  public onDateRangeChange(value: [Date | null, Date | null] | null): void {
+    this.dateRange.set(value);
+  }
+
   public clearDates(): void {
-    this.fromDate.set(null);
-    this.toDate.set(null);
+    this.dateRange.set(null);
     this.loadStatistics();
   }
 

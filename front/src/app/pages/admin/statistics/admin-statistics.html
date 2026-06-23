@@ -5,25 +5,15 @@
 
   <div class="admin-statistics__filters">
     <div class="admin-statistics__date-group">
-      <label class="admin-statistics__label">Desde</label>
+      <label class="admin-statistics__label">Rango de fechas</label>
       <p-datepicker
-        [ngModel]="fromDate()"
-        (ngModelChange)="fromDate.set($event)"
+        [ngModel]="dateRange()"
+        (ngModelChange)="onDateRangeChange($event)"
+        selectionMode="range"
         inputClass="form-input"
         styleClass="form-datepicker"
         dateFormat="dd/mm/yy"
-        placeholder="Fecha inicio">
-      </p-datepicker>
-    </div>
-    <div class="admin-statistics__date-group">
-      <label class="admin-statistics__label">Hasta</label>
-      <p-datepicker
-        [ngModel]="toDate()"
-        (ngModelChange)="toDate.set($event)"
-        inputClass="form-input"
-        styleClass="form-datepicker"
-        dateFormat="dd/mm/yy"
-        placeholder="Fecha fin">
+        placeholder="Desde - Hasta">
       </p-datepicker>
     </div>
     <div class="admin-statistics__filter-actions">
@@ -34,7 +24,9 @@
 
   @if (loading()) {
     <div class="admin-statistics__loading">
-      <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: var(--color-primary)"></i>
+      <i
+        class="pi pi-spin pi-spinner"
+        style="font-size: 2rem; color: var(--color-primary)"></i>
       <span>Cargando estadísticas...</span>
     </div>
   }
@@ -44,7 +36,10 @@
       <h2 class="admin-statistics__card-title">Publicaciones por usuario</h2>
       <div class="admin-statistics__chart-container">
         @if (barData()) {
-          <p-chart type="bar" [data]="barData()" [options]="barOptions()"></p-chart>
+          <p-chart
+            type="bar"
+            [data]="barData()"
+            [options]="barOptions()"></p-chart>
         } @else {
           <p class="admin-statistics__no-data">Sin datos disponibles</p>
         }
@@ -55,7 +50,10 @@
       <h2 class="admin-statistics__card-title">Comentarios por día</h2>
       <div class="admin-statistics__chart-container">
         @if (doughnutData()) {
-          <p-chart type="doughnut" [data]="doughnutData()" [options]="doughnutOptions()"></p-chart>
+          <p-chart
+            type="doughnut"
+            [data]="doughnutData()"
+            [options]="doughnutOptions()"></p-chart>
         } @else {
           <p class="admin-statistics__no-data">Sin datos disponibles</p>
         }
@@ -66,7 +64,10 @@
       <h2 class="admin-statistics__card-title">Comentarios por publicación</h2>
       <div class="admin-statistics__chart-container">
         @if (lineData()) {
-          <p-chart type="line" [data]="lineData()" [options]="lineOptions()"></p-chart>
+          <p-chart
+            type="line"
+            [data]="lineData()"
+            [options]="lineOptions()"></p-chart>
         } @else {
           <p class="admin-statistics__no-data">Sin datos disponibles</p>
         }

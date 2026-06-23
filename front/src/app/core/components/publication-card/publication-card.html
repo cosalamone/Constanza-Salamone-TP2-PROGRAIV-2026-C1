@@ -16,7 +16,7 @@
         <span class="pub-card__username"
           >{{ publication().user.name }} {{ publication().user.lastName }}</span
         >
-        <span class="pub-card__time">{{ publication().createdAt | timeAgo }}</span>
+        <span class="pub-card__time" [title]="publication().createdAt | formatDate:'long'">{{ publication().createdAt | relativeTime:6 }}</span>
       </div>
     </div>
     @if (canDelete()) {
@@ -34,7 +34,7 @@
 
   <div class="pub-card__content">
     <h3 class="pub-card__title">{{ publication().title }}</h3>
-    <p class="pub-card__description">{{ publication().description | truncateText:100 }}</p>
+    <p class="pub-card__description"><app-truncate-text [text]="publication().description" [limit]="100" moreLabel="ver más" lessLabel="ver menos"></app-truncate-text></p>
   </div>
 
   <footer class="pub-card__footer">
