@@ -5,12 +5,14 @@ import { ButtonBaseComponent } from '../buttons/button-base/button-base.componen
 import { ButtonIconModel } from '../../models/buttons/icons-buttons/button-icon.model';
 import { ButtonCommonModel } from '../../models/buttons/button-common.model';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
+import { HighlightOnHoverDirective } from '../../directives/highlight-on-hover.directive';
+import { TruncateTextPipe } from '../../pipes/truncate-text.pipe';
 import { of } from 'rxjs';
 
 @Component({
   selector: 'app-publication-card',
   standalone: true,
-  imports: [PhotoSlotComponent, ButtonBaseComponent, TimeAgoPipe],
+  imports: [PhotoSlotComponent, ButtonBaseComponent, TimeAgoPipe, HighlightOnHoverDirective, TruncateTextPipe],
   templateUrl: './publication-card.html',
   styleUrls: ['./publication-card.css'],
 })

@@ -1,4 +1,6 @@
-<article class="pub-card">
+<article
+  class="pub-card"
+  appHighlightOnHover>
   <header class="pub-card__header">
     <div class="pub-card__user">
       <app-photo-slot
@@ -32,7 +34,7 @@
 
   <div class="pub-card__content">
     <h3 class="pub-card__title">{{ publication().title }}</h3>
-    <p class="pub-card__description">{{ publication().description }}</p>
+    <p class="pub-card__description">{{ publication().description | truncateText:100 }}</p>
   </div>
 
   <footer class="pub-card__footer">

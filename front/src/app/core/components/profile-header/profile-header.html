@@ -13,7 +13,7 @@
     <div class="profile__details">
       <h1 class="profile__name">{{ user().name }} {{ user().lastName }}</h1>
       <p class="profile__username">@{{ user().username }} · {{ user().role }}</p>
-      <p class="profile__description">{{ user().description }}</p>
+      <p class="profile__description">{{ user().description | truncateText:150 }}</p>
 
       <div class="profile__stats">
         <div class="profile__stat">

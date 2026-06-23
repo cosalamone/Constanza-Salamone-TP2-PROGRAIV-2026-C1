@@ -22,7 +22,7 @@ export class StatisticsService {
       { $match: match },
       {
         $group: {
-          _id: '$userId',
+          _id: { $toObjectId: '$userId' },
           count: { $sum: 1 },
         },
       },
@@ -34,11 +34,11 @@ export class StatisticsService {
           as: 'user',
         },
       },
-      { $unwind: '$user' },
+      { $unwind: { path: '$user', preserveNullAndEmptyArrays: false } },
       {
         $project: {
           _id: 0,
-          userId: '$_id',
+          userId: { $toString: '$_id' },
           name: '$user.name',
           lastName: '$user.lastName',
           username: '$user.username',

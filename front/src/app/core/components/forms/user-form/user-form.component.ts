@@ -8,11 +8,12 @@ import {
   passwordValidator,
   confirmPasswordValidator,
 } from '../../../utils/form-validation';
+import { AutoFocusDirective } from '../../../directives/auto-focus.directive';
 
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [ReactiveFormsModule, FormErrorMessageComponent, PhotoSlotComponent, DatePickerModule],
+  imports: [ReactiveFormsModule, FormErrorMessageComponent, PhotoSlotComponent, DatePickerModule, AutoFocusDirective],
   templateUrl: './user-form.component.html',
   styleUrls: ['./user-form.component.css'],
 })

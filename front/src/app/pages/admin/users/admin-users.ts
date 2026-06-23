@@ -11,6 +11,7 @@ import { UserType } from '../../../core/enums/user-type.enum';
 import { UserFormComponent } from '../../../core/components/forms/user-form/user-form.component';
 import { PhotoCaptureService } from '../../../core/services/photo-capture.service';
 import { compressImage } from '../../../core/utils/image-compression';
+import { ClickOutsideDirective } from '../../../core/directives/click-outside.directive';
 
 @Component({
   selector: 'app-admin-users',
@@ -19,6 +20,7 @@ import { compressImage } from '../../../core/utils/image-compression';
     TableBaseComponent,
     ButtonBaseComponent,
     UserFormComponent,
+    ClickOutsideDirective,
   ],
   templateUrl: './admin-users.html',
   styleUrls: ['./admin-users.css'],

@@ -16,7 +16,8 @@
           type="text"
           formControlName="username"
           name="username"
-          placeholder="Nombre de usuario" />
+          placeholder="Nombre de usuario"
+          appAutoFocus />
         <app-form-error-message
           [control]="loginFormGroup.get('username')"
           label="Nombre de usuario"></app-form-error-message>

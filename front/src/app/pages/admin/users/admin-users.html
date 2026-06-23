@@ -5,7 +5,7 @@
   </header>
 
   @if (showForm()) {
-    <div class="admin-users__form-panel">
+    <div class="admin-users__form-panel" appClickOutside (clickOutside)="cancelForm()">
       <h2>Crear nuevo usuario</h2>
       <app-user-form
         [showRole]="true"

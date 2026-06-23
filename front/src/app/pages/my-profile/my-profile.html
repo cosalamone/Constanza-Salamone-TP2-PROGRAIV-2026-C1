@@ -12,7 +12,10 @@
           <app-publication-card
             [publication]="pub"
             [showComments]="true"
-            [canDelete]="pub.userId === currentUserId() || isAdmin()" />
+            [canDelete]="pub.userId === currentUserId() || isAdmin()"
+            (likeToggled)="onLikeToggle($event)"
+            (deleteRequested)="onDelete($event)"
+            (commentClicked)="onCommentClick($event)" />
         } @empty {
           <p class="profile-page__empty">Aún no tenés publicaciones.</p>
         }
@@ -23,4 +26,6 @@
       <p>No se encontraron datos del perfil.</p>
     </div>
   }
+
+  <p-confirmdialog styleClass="pub-confirm-dialog" />
 </section>
