@@ -40,6 +40,7 @@ export class PhotoCaptureService {
         this._cleanup(input);
       };
 
+      input.addEventListener('click', (e) => e.stopPropagation(), { once: true });
       document.body.appendChild(input);
       input.click();
     });
